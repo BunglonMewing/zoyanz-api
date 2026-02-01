@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 // ========== DISCORD WEBHOOK ==========
-const WEBHOOK_URL = process.env.WEBHOOK_URL || "https://discord.com/api/webhooks/1433251978791878669/DZ5HKcB9VMtMWgvBjszczCaEQ8jCpOS_qskHuh5uBtYiH7NyMqgqPvC_4-HmxFU53lQ9"
+const WEBHOOK_URL = process.env.WEBHOOK_URL || "https://discord.com/api/webhooks/1467403707271610451/ItoCKYkqXRPwfJH1I-NCAx4n9-MAAYhFpLQH2eB02dhucMl97y3nl467IulOMxl6zShn"
 const fetch = (...args) => import("node-fetch").then(({ default: f }) => f(...args));
 
 async function sendWebhook(content, embeds = null) {
