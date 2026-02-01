@@ -2,7 +2,7 @@
   "openapi": "1.0.0",
   "info": {
     "title": "Theresa",
-    "author": "Z7:林企业",
+    "author": "Azor Ceha",
     "version": "v1.0.0",
     "description": "Simple and easy to use API."
   },
@@ -266,7 +266,7 @@
               "type": "object",
               "properties": {
                 "status": { "type": "boolean", "example": true },
-                "creator": { "type": "string", "example": "Z7:林企业" },
+                "creator": { "type": "string", "example": "Azor Ceha" },
                 "result": {
                   "type": "object",
                   "properties": {
@@ -291,7 +291,7 @@
               "type": "object",
               "properties": {
                 "status": { "type": "boolean", "example": false },
-                "creator": { "type": "string", "example": "Z7:林企业" },
+                "creator": { "type": "string", "example": "Azor Ceha" },
                 "error": { "type": "string", "example": "URL harus dari Pinterest / pin.it" }
               }
             }
@@ -306,7 +306,7 @@
               "type": "object",
               "properties": {
                 "status": { "type": "boolean", "example": false },
-                "creator": { "type": "string", "example": "Z7:林企业" },
+                "creator": { "type": "string", "example": "Azor Ceha" },
                 "error": { "type": "string", "example": "Gagal memproses request" }
               }
             }
