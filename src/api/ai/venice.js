@@ -79,7 +79,7 @@ module.exports = function(app) {
             const result = await venicechat(message);
             res.json({
                 status: true,
-                creator: "Z7:林企业",
+                creator: "Azor & Yanz",
                 result
             });
         } catch (error) {
