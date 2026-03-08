@@ -10,43 +10,46 @@ module.exports = function (app) {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Linux; Android 9; Redmi 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Mobile Safari/537.36",
                 },
+                timeout: 10000
             });
 
             const $ = cheerio.load(res.data);
             const hasil = [];
 
-            // Selektor berdasarkan struktur halaman F-Droid
-            $(".package-info").each((i, el) => {
-                const name = $(el).find(".package-name").text().trim();
-                const description = $(el).find(".package-summary").text().trim();
-                const license = $(el).find(".package-license").text().trim();
-                
-                if (name) {
-                    hasil.push({
-                        name,
-                        description,
-                        license: license || "Unknown",
-                    });
-                }
-            });
+            // Setiap aplikasi berada dalam elemen <a class="package-header">
+            $('a.package-header').each((i, el) => {
+                // Nama aplikasi
+                const name = $(el).find('h4.package-name').text().trim();
+                if (!name) return; // lewati jika tidak ada nama
 
-            // Jika selektor di atas tidak bekerja (fallback)
-            if (hasil.length === 0) {
-                $('a[href^="/packages/"]').each((i, el) => {
-                    const parent = $(el).closest("div");
-                    const name = $(el).text().trim();
-                    const description = parent.find("p").first().text().trim();
-                    const license = parent.find(".package-license, .license").text().trim();
-                    
-                    if (name && !hasil.some(item => item.name === name)) {
-                        hasil.push({
-                            name,
-                            description,
-                            license: license || "Unknown",
-                        });
-                    }
+                // Deskripsi
+                const description = $(el).find('span.package-summary').text().trim();
+
+                // Lisensi
+                const license = $(el).find('span.package-license').text().trim() || "Unknown";
+
+                // Link detail aplikasi
+                let link = $(el).attr('href');
+                // Pastikan link absolut
+                if (link && !link.startsWith('http')) {
+                    link = `https://f-droid.org${link}`;
+                }
+
+                // Icon aplikasi
+                let icon = $(el).find('img.package-icon').attr('src');
+                if (icon && !icon.startsWith('http')) {
+                    // Jika icon relatif (misal /static/...), ubah ke absolut
+                    icon = `https://f-droid.org${icon}`;
+                }
+
+                hasil.push({
+                    name,
+                    description,
+                    license,
+                    link,
+                    icon: icon || null
                 });
-            }
+            });
 
             return {
                 status: true,
@@ -65,7 +68,7 @@ module.exports = function (app) {
         }
     }
 
-    // 📌 ROUTE untuk F-Droid Search
+    // 📌 ROUTE
     app.get("/search/fdroid", async (req, res) => {
         try {
             const { q, lang = 'id' } = req.query;
@@ -79,7 +82,7 @@ module.exports = function (app) {
 
             const data = await searchFdroid(q, lang);
             
-            // Jika ada error dari fungsi searchFdroid
+            // Jika terjadi error (misal timeout atau website down)
             if (data.code === 503) {
                 return res.status(503).json(data);
             }
