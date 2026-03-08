@@ -15,7 +15,7 @@
     { "name": "Downloader" },
     { "name": "Image" },
     { "name": "News" },
-    { "name": "Search Tools" }
+    { "name": "Search" }
   ],
   "paths": {
     "/ai/copilot": {
