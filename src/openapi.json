@@ -15,7 +15,7 @@
     { "name": "Downloader" },
     { "name": "Image" },
     { "name": "News" },
-    { "name": "Search" }
+    { "name": "Search Tools" }
   ],
   "paths": {
     "/ai/copilot": {
@@ -47,6 +47,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "status": { "type": "boolean", "example": true },
                     "text": { "type": "string", "example": "Berikut adalah berita terbaru dari Indonesia..." },
                     "citations": {
                       "type": "array",
@@ -359,6 +360,77 @@
           },
           "400": { "description": "URL tidak disertakan" },
           "500": { "description": "Gagal memproses request" }
+        }
+      }
+    },
+    "/download/ytdl": {
+      "get": {
+        "summary": "YouTube Downloader",
+        "description": "Download video/audio dari YouTube dengan kualitas terbaik",
+        "tags": ["Downloader"],
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "description": "URL video YouTube yang ingin di-download",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://youtu.be/dQw4w9WgXcQ"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan link download",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "title": { "type": "string", "example": "Rick Astley - Never Gonna Give You Up" },
+                        "mp3": { "type": "string", "format": "uri", "example": "https://cdn.ymcdn.org/download/xxx.mp3" },
+                        "mp4": { "type": "string", "format": "uri", "example": "https://cdn.ymcdn.org/download/xxx.mp4" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "URL tidak disertakan atau tidak valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Parameter 'url' wajib diisi" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal memproses request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Gagal memproses: URL YouTube tidak valid" }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -705,6 +777,16 @@
                           "license": {
                             "type": "string",
                             "example": "GPL-3.0-only"
+                          },
+                          "link": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://f-droid.org/id/packages/com.termux.styling"
+                          },
+                          "icon": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://f-droid.org/assets/ic_repo_app_default.png"
                           }
                         }
                       }
