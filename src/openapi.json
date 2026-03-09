@@ -789,10 +789,8 @@
           }
         }
       }
-    }
-  }
-},
-      "/random/ppcouple": {
+    },
+    "/random/ppcouple": {
       "get": {
         "summary": "Random PP Couple",
         "description": "Mendapatkan pasangan foto profil random untuk cowok dan cewek",
