@@ -16,7 +16,8 @@
     { "name": "Image" },
     { "name": "News" },
     { "name": "Search Tools" },
-    { "name": "Maker" }
+    { "name": "Maker" },
+    { "name": "Random" }
   ],
   "paths": {
     "/ai/copilot": {
