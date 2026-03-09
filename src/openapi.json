@@ -15,7 +15,8 @@
     { "name": "Downloader" },
     { "name": "Image" },
     { "name": "News" },
-    { "name": "Search Tools" }
+    { "name": "Search Tools" },
+    { "name": "Maker" }
   ],
   "paths": {
     "/ai/copilot": {
@@ -360,77 +361,6 @@
           },
           "400": { "description": "URL tidak disertakan" },
           "500": { "description": "Gagal memproses request" }
-        }
-      }
-    },
-    "/download/ytdl": {
-      "get": {
-        "summary": "YouTube Downloader",
-        "description": "Download video/audio dari YouTube dengan kualitas terbaik",
-        "tags": ["Downloader"],
-        "parameters": [
-          {
-            "name": "url",
-            "in": "query",
-            "description": "URL video YouTube yang ingin di-download",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://youtu.be/dQw4w9WgXcQ"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Berhasil mendapatkan link download",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "result": {
-                      "type": "object",
-                      "properties": {
-                        "title": { "type": "string", "example": "Rick Astley - Never Gonna Give You Up" },
-                        "mp3": { "type": "string", "format": "uri", "example": "https://cdn.ymcdn.org/download/xxx.mp3" },
-                        "mp4": { "type": "string", "format": "uri", "example": "https://cdn.ymcdn.org/download/xxx.mp4" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "URL tidak disertakan atau tidak valid",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Parameter 'url' wajib diisi" }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Gagal memproses request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal memproses: URL YouTube tidak valid" }
-                  }
-                }
-              }
-            }
-          }
         }
       }
     },
@@ -801,6 +731,90 @@
           },
           "500": {
             "description": "Gagal mengambil data dari F-Droid"
+          }
+        }
+      }
+    },
+    "/maker/brat": {
+      "get": {
+        "summary": "Brat Text to Image Generator",
+        "description": "Membuat gambar dengan teks khas style BRAT (respons dalam format base64)",
+        "tags": ["Maker"],
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": true,
+            "description": "Teks yang akan diubah menjadi gambar BRAT",
+            "schema": {
+              "type": "string",
+              "example": "apacoba"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil membuat gambar",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "text": { "type": "string", "example": "apacoba" },
+                    "image": { 
+                      "type": "string", 
+                      "format": "base64",
+                      "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." 
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'text' tidak disertakan"
+          },
+          "500": {
+            "description": "Gagal memproses request"
+          }
+        }
+      }
+    },
+    "/maker/brat/image": {
+      "get": {
+        "summary": "Brat Text to Image Generator (Direct Image)",
+        "description": "Membuat gambar dengan teks khas style BRAT (langsung mengembalikan file gambar)",
+        "tags": ["Maker"],
+        "parameters": [
+          {
+            "name": "text",
+            "in": "query",
+            "required": true,
+            "description": "Teks yang akan diubah menjadi gambar BRAT",
+            "schema": {
+              "type": "string",
+              "example": "apacoba"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil membuat gambar",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'text' tidak disertakan"
+          },
+          "500": {
+            "description": "Gagal memproses request"
           }
         }
       }
