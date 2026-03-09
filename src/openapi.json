@@ -738,52 +738,6 @@
     "/maker/brat": {
       "get": {
         "summary": "Brat Text to Image Generator",
-        "description": "Membuat gambar dengan teks khas style BRAT (respons dalam format base64)",
-        "tags": ["Maker"],
-        "parameters": [
-          {
-            "name": "text",
-            "in": "query",
-            "required": true,
-            "description": "Teks yang akan diubah menjadi gambar BRAT",
-            "schema": {
-              "type": "string",
-              "example": "apacoba"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Berhasil membuat gambar",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "text": { "type": "string", "example": "apacoba" },
-                    "image": { 
-                      "type": "string", 
-                      "format": "base64",
-                      "example": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA..." 
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Parameter 'text' tidak disertakan"
-          },
-          "500": {
-            "description": "Gagal memproses request"
-          }
-        }
-      }
-    },
-    "/maker/brat/image": {
-      "get": {
-        "summary": "Brat Text to Image Generator (Direct Image)",
         "description": "Membuat gambar dengan teks khas style BRAT (langsung mengembalikan file gambar)",
         "tags": ["Maker"],
         "parameters": [
@@ -811,10 +765,26 @@
             }
           },
           "400": {
-            "description": "Parameter 'text' tidak disertakan"
+            "description": "Parameter 'text' tidak disertakan",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Parameter \"text\" wajib diisi"
+                }
+              }
+            }
           },
           "500": {
-            "description": "Gagal memproses request"
+            "description": "Gagal memproses request",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Error: Gagal memproses request"
+                }
+              }
+            }
           }
         }
       }
