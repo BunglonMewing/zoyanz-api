@@ -791,4 +791,71 @@
       }
     }
   }
+},
+      "/random/ppcouple": {
+      "get": {
+        "summary": "Random PP Couple",
+        "description": "Mendapatkan pasangan foto profil random untuk cowok dan cewek",
+        "tags": ["Random"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan data ppcouple",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "creator": {
+                      "type": "string",
+                      "example": "ZoYanz"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "cowo": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://telegra.ph/file/1ead49a57800109e875b4.jpg"
+                        },
+                        "cewe": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://telegra.ph/file/0a59faa16e7c65a658e23.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal mengambil data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal mengambil data ppcouple: ..."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
