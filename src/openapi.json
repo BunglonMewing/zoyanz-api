@@ -365,146 +365,6 @@
         }
       }
     },
-    "/download/ytdl": {
-      "get": {
-        "summary": "YouTube Downloader",
-        "description": "Download video/audio dari YouTube dengan berbagai format kualitas",
-        "tags": ["Downloader"],
-        "parameters": [
-          {
-            "name": "url",
-            "in": "query",
-            "required": true,
-            "description": "URL video YouTube yang ingin di-download",
-            "schema": {
-              "type": "string",
-              "format": "uri",
-              "example": "https://youtu.be/0Raru5sJIPA"
-            }
-          },
-          {
-            "name": "format",
-            "in": "query",
-            "required": false,
-            "description": "Format output (default: MP4 (720p)). Lihat /download/ytdl/formats untuk daftar format lengkap",
-            "schema": {
-              "type": "string",
-              "default": "MP4 (720p)",
-              "example": "MP4 (720p)"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Berhasil mendapatkan link download",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
-                    "result": {
-                      "type": "object",
-                      "properties": {
-                        "videoId": { "type": "string", "example": "0Raru5sJIPA" },
-                        "title": { "type": "string", "example": "Rick Astley - Never Gonna Give You Up" },
-                        "thumbnail": { "type": "string", "format": "uri", "example": "https://i.ytimg.com/vi/0Raru5sJIPA/hqdefault.jpg" },
-                        "format": { "type": "string", "example": "MP4 (720p)" },
-                        "fileSize": { "type": "string", "example": "5.2 MB" },
-                        "downloadUrl": { "type": "string", "format": "uri", "example": "https://cdn.ytdownloader.io/download/..." },
-                        "secureUrl": { "type": "string", "format": "uri", "example": "https://secure.ytdownloader.io/download/..." }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "URL tidak valid atau format tidak didukung",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "URL YouTube tidak valid" }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Gagal memproses request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal mendapatkan download ID" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/download/ytdl/formats": {
-      "get": {
-        "summary": "YouTube Downloader - Daftar Format",
-        "description": "Mendapatkan daftar format yang tersedia untuk download YouTube",
-        "tags": ["Downloader"],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Daftar format berhasil didapatkan",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
-                    "formats": {
-                      "type": "object",
-                      "properties": {
-                        "audio": {
-                          "type": "array",
-                          "items": { "type": "string" },
-                          "example": ["MP3", "M4A", "WEBM", "AAC", "FLAC", "OPUS", "OGG", "WAV"]
-                        },
-                        "video": {
-                          "type": "array",
-                          "items": { "type": "string" },
-                          "example": ["MP4 (360p)", "MP4 (480p)", "MP4 (720p)", "MP4 (1080p)", "MP4 (1440p)", "WEBM (4K)"]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Gagal memproses request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal memproses request" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/image/bluearchive": {
       "get": {
         "summary": "Blue Archive",
@@ -872,6 +732,148 @@
           },
           "500": {
             "description": "Gagal mengambil data dari F-Droid"
+          }
+        }
+      }
+    },
+    "/search/wikipedia": {
+      "get": {
+        "summary": "Pencarian Wikipedia",
+        "description": "Mencari artikel di Wikipedia Bahasa Indonesia. Bisa memilih mode simple (ringkasan) atau deep (artikel lengkap)",
+        "tags": ["Search Tools"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Kata kunci pencarian (judul artikel)",
+            "schema": {
+              "type": "string",
+              "example": "Jokowi"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "description": "Mode pencarian: 'simple' untuk ringkasan (default), 'deep' untuk artikel lengkap",
+            "schema": {
+              "type": "string",
+              "enum": ["simple", "deep"],
+              "default": "simple"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hasil pencarian berhasil",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "query": { "type": "string", "example": "Jokowi" },
+                    "mode": { "type": "string", "example": "simple" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "status": { "type": "string", "example": "success" },
+                        "type": { "type": "string", "example": "simple" },
+                        "title": { "type": "string", "example": "Joko Widodo" },
+                        "url": { "type": "string", "example": "https://id.wikipedia.org/wiki/Joko_Widodo" },
+                        "thumbnail": { "type": "string", "example": "https://upload.wikimedia.org/..." },
+                        "summary": { "type": "string", "example": "Joko Widodo adalah Presiden Indonesia ke-7..." },
+                        "search_results": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "title": { "type": "string" },
+                              "snippet": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'q' tidak boleh kosong"
+          },
+          "500": {
+            "description": "Gagal mengambil data dari Wikipedia"
+          }
+        }
+      }
+    },
+    "/search/wikipedia/list": {
+      "get": {
+        "summary": "Daftar Pencarian Wikipedia",
+        "description": "Mendapatkan daftar artikel yang cocok dengan kata kunci (tanpa detail konten)",
+        "tags": ["Search Tools"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Kata kunci pencarian",
+            "schema": {
+              "type": "string",
+              "example": "Bandung"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Jumlah hasil maksimal (default 10, maks 50)",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "maximum": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar artikel berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "query": { "type": "string", "example": "Bandung" },
+                    "total": { "type": "integer", "example": 1250 },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "title": { "type": "string", "example": "Kota Bandung" },
+                          "snippet": { "type": "string", "example": "Kota Bandung adalah ibu kota Provinsi Jawa Barat..." },
+                          "size": { "type": "integer", "example": 45231 },
+                          "wordcount": { "type": "integer", "example": 6789 },
+                          "timestamp": { "type": "string", "example": "2024-01-15T10:30:45Z" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'q' tidak boleh kosong"
+          },
+          "500": {
+            "description": "Gagal mengambil data"
           }
         }
       }
