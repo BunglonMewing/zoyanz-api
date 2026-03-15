@@ -4,11 +4,5 @@
     "date": "2026-03-15",
     "title": "Update Endpoint Baru!", 
     "message": "Sekarang ada update baru dari API, yaitu Kategori Search, yaitu /search/wikipedia dan /search/wikipedia/list"
-  },
-  {
-    "id": "#02",
-    "date": "2026-03-09",
-    "title": "Update Endpoint Baru!", 
-    "message": "Sekarang ada update baru dari API, yaitu Kategori Search, Maker, dan Random. Endpoint juga ada, yaitu /search/fdroid, /maker/brat, dan /random/ppcouple"
   }
 ]
