@@ -365,6 +365,146 @@
         }
       }
     },
+    "/download/ytdl": {
+      "get": {
+        "summary": "YouTube Downloader",
+        "description": "Download video/audio dari YouTube dengan berbagai format kualitas",
+        "tags": ["Downloader"],
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "description": "URL video YouTube yang ingin di-download",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://youtu.be/0Raru5sJIPA"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Format output (default: MP4 (720p)). Lihat /download/ytdl/formats untuk daftar format lengkap",
+            "schema": {
+              "type": "string",
+              "default": "MP4 (720p)",
+              "example": "MP4 (720p)"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan link download",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "videoId": { "type": "string", "example": "0Raru5sJIPA" },
+                        "title": { "type": "string", "example": "Rick Astley - Never Gonna Give You Up" },
+                        "thumbnail": { "type": "string", "format": "uri", "example": "https://i.ytimg.com/vi/0Raru5sJIPA/hqdefault.jpg" },
+                        "format": { "type": "string", "example": "MP4 (720p)" },
+                        "fileSize": { "type": "string", "example": "5.2 MB" },
+                        "downloadUrl": { "type": "string", "format": "uri", "example": "https://cdn.ytdownloader.io/download/..." },
+                        "secureUrl": { "type": "string", "format": "uri", "example": "https://secure.ytdownloader.io/download/..." }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "URL tidak valid atau format tidak didukung",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "URL YouTube tidak valid" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal memproses request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Gagal mendapatkan download ID" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/download/ytdl/formats": {
+      "get": {
+        "summary": "YouTube Downloader - Daftar Format",
+        "description": "Mendapatkan daftar format yang tersedia untuk download YouTube",
+        "tags": ["Downloader"],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Daftar format berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "formats": {
+                      "type": "object",
+                      "properties": {
+                        "audio": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "example": ["MP3", "M4A", "WEBM", "AAC", "FLAC", "OPUS", "OGG", "WAV"]
+                        },
+                        "video": {
+                          "type": "array",
+                          "items": { "type": "string" },
+                          "example": ["MP4 (360p)", "MP4 (480p)", "MP4 (720p)", "MP4 (1080p)", "MP4 (1440p)", "WEBM (4K)"]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal memproses request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Gagal memproses request" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/image/bluearchive": {
       "get": {
         "summary": "Blue Archive",
