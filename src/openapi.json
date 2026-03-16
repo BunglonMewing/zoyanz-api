@@ -831,27 +831,17 @@
     "/search/transfermarkt": {
       "get": {
         "summary": "Pencarian Pemain Transfermarkt",
-        "description": "Mencari pemain sepak bola di Transfermarkt berdasarkan nama. Bisa juga menggunakan ID untuk detail langsung.",
+        "description": "Mencari pemain sepak bola di Transfermarkt berdasarkan nama. Menampilkan hasil pencarian dan detail pemain pertama.",
         "tags": ["Search Tools"],
         "parameters": [
           {
             "name": "q",
             "in": "query",
-            "required": false,
+            "required": true,
             "description": "Nama pemain yang dicari (contoh: Ronaldo, Messi, Mbappe)",
             "schema": {
               "type": "string",
               "example": "Ronaldo"
-            }
-          },
-          {
-            "name": "id",
-            "in": "query",
-            "required": false,
-            "description": "ID pemain di Transfermarkt (contoh: 8198 untuk Cristiano Ronaldo)",
-            "schema": {
-              "type": "string",
-              "example": "8198"
             }
           }
         ],
@@ -866,7 +856,6 @@
                     "status": { "type": "boolean", "example": true },
                     "creator": { "type": "string", "example": "ZoYanz" },
                     "query": { "type": "string", "example": "Ronaldo" },
-                    "playerId": { "type": "string", "example": null },
                     "result": {
                       "type": "object",
                       "properties": {
@@ -928,14 +917,14 @@
             }
           },
           "400": {
-            "description": "Parameter tidak lengkap",
+            "description": "Parameter 'q' tidak boleh kosong",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Parameter 'q' (nama pemain) atau 'id' (ID pemain) wajib diisi" }
+                    "error": { "type": "string", "example": "Parameter 'q' (nama pemain) wajib diisi" }
                   }
                 }
               }
@@ -1022,81 +1011,6 @@
           },
           "400": {
             "description": "Parameter 'q' tidak boleh kosong"
-          },
-          "500": {
-            "description": "Gagal mengambil data"
-          }
-        }
-      }
-    },
-    "/search/transfermarkt/detail": {
-      "get": {
-        "summary": "Detail Pemain Transfermarkt",
-        "description": "Mendapatkan detail lengkap pemain berdasarkan ID Transfermarkt",
-        "tags": ["Search Tools"],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "query",
-            "required": true,
-            "description": "ID pemain di Transfermarkt (contoh: 8198 untuk Cristiano Ronaldo, 28003 untuk Lionel Messi)",
-            "schema": {
-              "type": "string",
-              "example": "8198"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Detail pemain berhasil didapatkan",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
-                    "playerId": { "type": "string", "example": "8198" },
-                    "result": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string" },
-                        "name": { "type": "string" },
-                        "image": { "type": "string", "format": "uri" },
-                        "club": { "type": "string" },
-                        "clubLogo": { "type": "string", "format": "uri" },
-                        "fullName": { "type": "string" },
-                        "age": { "type": "string" },
-                        "birthplace": { "type": "string" },
-                        "height": { "type": "string" },
-                        "nationality": { "type": "string" },
-                        "position": { "type": "string" },
-                        "foot": { "type": "string" },
-                        "agent": { "type": "string" },
-                        "joined": { "type": "string" },
-                        "contract": { "type": "string" },
-                        "marketValue": { "type": "string" },
-                        "stats": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "competition": { "type": "string" },
-                              "apps": { "type": "string" },
-                              "goals": { "type": "string" },
-                              "assists": { "type": "string" }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Parameter 'id' tidak boleh kosong"
           },
           "500": {
             "description": "Gagal mengambil data"
