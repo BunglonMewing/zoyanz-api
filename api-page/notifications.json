@@ -1,7 +1,7 @@
 [
   {
     "id": "#01",
-    "date": "2026-03-15",
+    "date": "2026-03-16",
     "title": "Update Endpoint Baru!", 
     "message": "Sekarang ada update baru dari API, yaitu Kategori Download dan Search. Ada /search/transfermarkt dan /download/mediafire"
   }
