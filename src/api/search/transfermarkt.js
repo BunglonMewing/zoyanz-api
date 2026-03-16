@@ -28,7 +28,19 @@ module.exports = function (app) {
                 $('#player-grid tbody tr').each((i, el) => {
                     const name = $(el).find('.hauptlink a').first().text().trim();
                     const detailUrl = $(el).find('.hauptlink a').first().attr('href');
-                    const id = detailUrl?.match(/spieler\/(\d+)/)?.[1];
+                    
+                    // Ekstrak ID dari URL
+                    let id = null;
+                    if (detailUrl) {
+                        const idMatch = detailUrl.match(/spieler\/(\d+)/);
+                        if (idMatch) id = idMatch[1];
+                    }
+                    
+                    // Perbaiki URL detail jika perlu
+                    let fullDetailUrl = detailUrl;
+                    if (detailUrl && !detailUrl.startsWith('http')) {
+                        fullDetailUrl = this.baseUrl + detailUrl;
+                    }
                     
                     if (name && id) {
                         results.push({
@@ -39,7 +51,7 @@ module.exports = function (app) {
                             nationality: $(el).find('.flaggenrahmen').first().attr('title') || 'N/A',
                             marketValue: $(el).find('.rechts.hauptlink').first().text().trim() || 'N/A',
                             image: $(el).find('.bilderrahmen-fixed').attr('src') || null,
-                            detailUrl: detailUrl?.startsWith('http') ? detailUrl : this.baseUrl + detailUrl,
+                            detailUrl: fullDetailUrl,
                             id
                         });
                     }
@@ -53,7 +65,9 @@ module.exports = function (app) {
 
         async getPlayerDetail(playerId) {
             try {
-                const detailUrl = `${this.baseUrl}/profil/spieler/${playerId}`;
+                // Perbaiki URL detail - gunakan format yang benar
+                const detailUrl = `https://www.transfermarkt.co.id/profil/spieler/${playerId}`;
+                
                 const { data } = await axios.get(detailUrl, { 
                     headers: this.headers,
                     timeout: 15000 
@@ -68,7 +82,9 @@ module.exports = function (app) {
                     if (i % 2 === 0) {
                         info.label = text;
                     } else if (info.label) {
-                        info[info.label] = text;
+                        // Bersihkan label dan simpan
+                        const cleanLabel = info.label.replace(/[:\s]/g, '').trim();
+                        info[cleanLabel] = text;
                     }
                 });
 
@@ -81,35 +97,63 @@ module.exports = function (app) {
                         const apps = $(cols[1]).text().trim();
                         const goals = $(cols[2]).text().trim();
                         const assists = $(cols[3]).text().trim();
-                        if (competition && competition !== '' && !competition.includes('Total')) {
+                        if (competition && competition !== '' && !competition.includes('Total') && !competition.includes('Total')) {
                             stats.push({ competition, apps, goals, assists });
                         }
                     }
                 });
 
                 // Ambil nilai pasar
-                const marketValueText = $('.data-header__market-value-wrapper').first().text().trim().replace(/\s+/g, ' ');
-                const marketValue = marketValueText.split('Update')[0].trim();
+                let marketValue = 'N/A';
+                const marketValueElement = $('.data-header__market-value-wrapper').first();
+                if (marketValueElement.length) {
+                    const marketValueText = marketValueElement.text().trim().replace(/\s+/g, ' ');
+                    marketValue = marketValueText.split('Update')[0].trim();
+                }
 
-                // Ambil nama pemain
-                const name = $('h1').first().text().trim().replace(/\s+/g, ' ').replace('#7', '').trim();
+                // Ambil nama pemain - coba beberapa selector
+                let name = 'N/A';
+                const nameSelectors = ['h1', '.data-header__headline-wrapper', '.spielername-profil'];
+                for (const selector of nameSelectors) {
+                    const el = $(selector).first();
+                    if (el.length) {
+                        name = el.text().trim().replace(/\s+/g, ' ').replace(/#\d+/g, '').trim();
+                        if (name && name !== 'N/A') break;
+                    }
+                }
                 
                 // Ambil klub dan logo
-                const club = $('.data-header__club a').first().text().trim() || 'N/A';
-                let clubLogo = $('.data-header__box--big img').first().attr('src') || 
-                              $('.data-header__box--big img').first().attr('data-src') || 
-                              null;
+                let club = 'N/A';
+                let clubLogo = null;
                 
-                // Perbaiki URL logo jika relatif
-                if (clubLogo && !clubLogo.startsWith('http')) {
-                    clubLogo = this.baseUrl + clubLogo;
+                const clubElement = $('.data-header__club a').first();
+                if (clubElement.length) {
+                    club = clubElement.text().trim() || 'N/A';
+                }
+                
+                const logoElement = $('.data-header__box--big img').first();
+                if (logoElement.length) {
+                    clubLogo = logoElement.attr('src') || logoElement.attr('data-src') || null;
+                    if (clubLogo && !clubLogo.startsWith('http')) {
+                        clubLogo = 'https:' + clubLogo;
+                    }
                 }
 
                 // Ambil foto pemain
-                let image = $('.data-header__profile-image').attr('src') || null;
-                if (image && !image.startsWith('http')) {
-                    image = this.baseUrl + image;
+                let image = null;
+                const imageElement = $('.data-header__profile-image').first();
+                if (imageElement.length) {
+                    image = imageElement.attr('src') || null;
+                    if (image && !image.startsWith('http')) {
+                        image = 'https:' + image;
+                    }
                 }
+
+                // Fungsi helper untuk mengambil info dengan aman
+                const getInfo = (key) => {
+                    const value = info[key] || 'N/A';
+                    return value.replace(/\s+/g, ' ').trim();
+                };
 
                 return {
                     id: playerId,
@@ -117,17 +161,17 @@ module.exports = function (app) {
                     image,
                     club,
                     clubLogo,
-                    fullName: info['Nama lengkap:'] || 'N/A',
-                    age: info['Tanggal lahir / Umur:'] || 'N/A',
-                    birthplace: info['Tempat kelahiran:']?.replace(/[^\w\s,]/g, '').trim() || 'N/A',
-                    height: info['Tinggi:'] || 'N/A',
-                    nationality: info['Kewarganegaraan:']?.replace(/\s+/g, ' ').trim() || 'N/A',
-                    position: info['Posisi:'] || 'N/A',
-                    foot: info['Kaki dominan:'] || 'N/A',
-                    agent: info['Agen pemain:']?.replace(/\s+/g, ' ').trim() || 'N/A',
-                    joined: info['Bergabung:'] || 'N/A',
-                    contract: info['Kontrak berakhir:'] || 'N/A',
-                    marketValue: marketValue || 'N/A',
+                    fullName: getInfo('Namalengkap'),
+                    age: getInfo('TanggallahirUmur'),
+                    birthplace: getInfo('Tempatkelahiran')?.replace(/[^\w\s,]/g, '').trim() || 'N/A',
+                    height: getInfo('Tinggi'),
+                    nationality: getInfo('Kewarganegaraan'),
+                    position: getInfo('Posisi'),
+                    foot: getInfo('Kakidominan'),
+                    agent: getInfo('Agenpemain'),
+                    joined: getInfo('Bergabung'),
+                    contract: getInfo('Kontrakberakhir'),
+                    marketValue: marketValue,
                     stats: stats.slice(0, 10) // Batasi 10 statistik teratas
                 };
             } catch (error) {
@@ -145,52 +189,51 @@ module.exports = function (app) {
 
             // Ambil detail pemain pertama
             const firstResult = searchResults[0];
-            const detail = await this.getPlayerDetail(firstResult.id);
-
-            return {
-                search: searchResults.slice(0, 5), // Batasi 5 hasil pencarian
-                detail: detail
-            };
+            
+            try {
+                const detail = await this.getPlayerDetail(firstResult.id);
+                return {
+                    search: searchResults.slice(0, 5), // Batasi 5 hasil pencarian
+                    detail: detail
+                };
+            } catch (detailError) {
+                // Jika gagal mengambil detail, tetap kembalikan hasil pencarian
+                return {
+                    search: searchResults.slice(0, 5),
+                    detail: null,
+                    note: "Detail pemain tidak dapat diambil, namun hasil pencarian tersedia"
+                };
+            }
         }
     }
 
     // 📌 ROUTE - Pencarian pemain di Transfermarkt
     app.get("/search/transfermarkt", async (req, res) => {
         try {
-            const { q, id } = req.query;
+            const { q } = req.query;
 
-            if (!q && !id) {
+            if (!q || q.trim() === '') {
                 return res.status(400).json({
                     status: false,
-                    error: "Parameter 'q' (nama pemain) atau 'id' (ID pemain) wajib diisi"
+                    creator: "Azor & Yanz",
+                    error: "Parameter 'q' (nama pemain) wajib diisi"
                 });
             }
 
             const scraper = new Transfermarkt();
-            let result;
-
-            if (id) {
-                // Jika ada ID, langsung ambil detail
-                const detail = await scraper.getPlayerDetail(id);
-                result = {
-                    detail: detail
-                };
-            } else {
-                // Jika ada query, cari pemain
-                result = await scraper.getPlayer(q);
-            }
+            const result = await scraper.getPlayer(q);
 
             res.json({
                 status: true,
-                creator: "ZoYanz",
-                query: q || null,
-                playerId: id || null,
+                creator: "Azor & Yanz",
+                query: q,
                 result: result
             });
 
         } catch (error) {
             res.status(500).json({
                 status: false,
+                creator: "Azor & Yanz",
                 error: error.message
             });
         }
@@ -201,9 +244,10 @@ module.exports = function (app) {
         try {
             const { q, limit = 10 } = req.query;
 
-            if (!q) {
+            if (!q || q.trim() === '') {
                 return res.status(400).json({
                     status: false,
+                    creator: "Azor & Yanz",
                     error: "Parameter 'q' (nama pemain) wajib diisi"
                 });
             }
@@ -225,36 +269,7 @@ module.exports = function (app) {
         } catch (error) {
             res.status(500).json({
                 status: false,
-                error: error.message
-            });
-        }
-    });
-
-    // 📌 ROUTE - Detail pemain berdasarkan ID
-    app.get("/search/transfermarkt/detail", async (req, res) => {
-        try {
-            const { id } = req.query;
-
-            if (!id) {
-                return res.status(400).json({
-                    status: false,
-                    error: "Parameter 'id' (ID pemain) wajib diisi"
-                });
-            }
-
-            const scraper = new Transfermarkt();
-            const detail = await scraper.getPlayerDetail(id);
-
-            res.json({
-                status: true,
-                creator: "ZoYanz",
-                playerId: id,
-                result: detail
-            });
-
-        } catch (error) {
-            res.status(500).json({
-                status: false,
+                creator: "Azor & Yanz",
                 error: error.message
             });
         }
