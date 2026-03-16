@@ -244,6 +244,98 @@
         }
       }
     },
+    "/download/mediafire": {
+      "get": {
+        "summary": "MediaFire Downloader",
+        "description": "Mengambil informasi dan link download dari file MediaFire",
+        "tags": ["Downloader"],
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "description": "URL file MediaFire yang ingin di-download",
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "example": "https://www.mediafire.com/file/b89hlvgqub8uwhn/example.zip/file"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Berhasil mendapatkan informasi file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "meta": {
+                          "type": "object",
+                          "properties": {
+                            "title": { "type": "string", "example": "MT MANAGER INI BUAT YANG ZArchiver nya error yaa .zip" },
+                            "filename": { "type": "string", "example": "MT_MANAGER_INI_BUAT_YANG_ZArchiver_nya_error_yaa_.zip" },
+                            "thumbnail": { "type": "string", "format": "uri", "example": "https://www.mediafire.com/thumb.jpg" },
+                            "description": { "type": "string", "example": "Compressed Archive (.ZIP) - File size: 25.48MB" },
+                            "file_size": { "type": "string", "example": "25.48MB" },
+                            "upload_date": { "type": "string", "example": "2025-12-05 20:38:37" },
+                            "file_type": { "type": "string", "example": "ZIP" }
+                          }
+                        },
+                        "download": {
+                          "type": "object",
+                          "properties": {
+                            "url": { "type": "string", "format": "uri", "example": "https://download.../file.zip" },
+                            "size": { "type": "string", "example": "25.48MB" },
+                            "mimetype": { "type": "string", "example": "application/zip" },
+                            "direct_link": { "type": "string", "format": "uri", "example": "https://download.../file.zip" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "URL tidak valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "error": { "type": "string", "example": "URL harus dari MediaFire (mediafire.com)" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal memproses request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "error": { "type": "string", "example": "Gagal mengambil data dari MediaFire: ..." }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/download/pinterest": {
       "get": {
         "summary": "Pinterest Downloader",
@@ -732,6 +824,282 @@
           },
           "500": {
             "description": "Gagal mengambil data dari F-Droid"
+          }
+        }
+      }
+    },
+    "/search/transfermarkt": {
+      "get": {
+        "summary": "Pencarian Pemain Transfermarkt",
+        "description": "Mencari pemain sepak bola di Transfermarkt berdasarkan nama. Bisa juga menggunakan ID untuk detail langsung.",
+        "tags": ["Search Tools"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "description": "Nama pemain yang dicari (contoh: Ronaldo, Messi, Mbappe)",
+            "schema": {
+              "type": "string",
+              "example": "Ronaldo"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "description": "ID pemain di Transfermarkt (contoh: 8198 untuk Cristiano Ronaldo)",
+            "schema": {
+              "type": "string",
+              "example": "8198"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Data pemain berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "query": { "type": "string", "example": "Ronaldo" },
+                    "playerId": { "type": "string", "example": null },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "search": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": { "type": "string", "example": "Cristiano Ronaldo" },
+                              "position": { "type": "string", "example": "Striker" },
+                              "age": { "type": "string", "example": "39" },
+                              "club": { "type": "string", "example": "Al-Nassr FC" },
+                              "nationality": { "type": "string", "example": "Portugal" },
+                              "marketValue": { "type": "string", "example": "€15.00m" },
+                              "image": { "type": "string", "format": "uri" },
+                              "detailUrl": { "type": "string", "format": "uri" },
+                              "id": { "type": "string", "example": "8198" }
+                            }
+                          }
+                        },
+                        "detail": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "string", "example": "8198" },
+                            "name": { "type": "string", "example": "Cristiano Ronaldo" },
+                            "image": { "type": "string", "format": "uri" },
+                            "club": { "type": "string", "example": "Al-Nassr FC" },
+                            "clubLogo": { "type": "string", "format": "uri" },
+                            "fullName": { "type": "string", "example": "Cristiano Ronaldo dos Santos Aveiro" },
+                            "age": { "type": "string", "example": "39 tahun" },
+                            "birthplace": { "type": "string", "example": "Funchal" },
+                            "height": { "type": "string", "example": "1,87 m" },
+                            "nationality": { "type": "string", "example": "Portugal" },
+                            "position": { "type": "string", "example": "Striker" },
+                            "foot": { "type": "string", "example": "Kanan" },
+                            "agent": { "type": "string", "example": "Gestifute" },
+                            "joined": { "type": "string", "example": "1 Jan 2023" },
+                            "contract": { "type": "string", "example": "30 Jun 2025" },
+                            "marketValue": { "type": "string", "example": "€15.00m" },
+                            "stats": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "competition": { "type": "string" },
+                                  "apps": { "type": "string" },
+                                  "goals": { "type": "string" },
+                                  "assists": { "type": "string" }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter tidak lengkap",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Parameter 'q' (nama pemain) atau 'id' (ID pemain) wajib diisi" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal mengambil data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "error": { "type": "string", "example": "Pemain dengan nama 'Ronaldo' tidak ditemukan" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/transfermarkt/list": {
+      "get": {
+        "summary": "Daftar Pencarian Pemain Transfermarkt",
+        "description": "Mendapatkan daftar pemain yang cocok dengan kata kunci (tanpa detail lengkap)",
+        "tags": ["Search Tools"],
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Nama pemain yang dicari",
+            "schema": {
+              "type": "string",
+              "example": "Messi"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Jumlah hasil maksimal (default 10, maks 30)",
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "maximum": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar pemain berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "query": { "type": "string", "example": "Messi" },
+                    "total": { "type": "integer", "example": 5 },
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "position": { "type": "string" },
+                          "age": { "type": "string" },
+                          "club": { "type": "string" },
+                          "nationality": { "type": "string" },
+                          "marketValue": { "type": "string" },
+                          "image": { "type": "string", "format": "uri" },
+                          "detailUrl": { "type": "string", "format": "uri" },
+                          "id": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'q' tidak boleh kosong"
+          },
+          "500": {
+            "description": "Gagal mengambil data"
+          }
+        }
+      }
+    },
+    "/search/transfermarkt/detail": {
+      "get": {
+        "summary": "Detail Pemain Transfermarkt",
+        "description": "Mendapatkan detail lengkap pemain berdasarkan ID Transfermarkt",
+        "tags": ["Search Tools"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "ID pemain di Transfermarkt (contoh: 8198 untuk Cristiano Ronaldo, 28003 untuk Lionel Messi)",
+            "schema": {
+              "type": "string",
+              "example": "8198"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail pemain berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "playerId": { "type": "string", "example": "8198" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "string" },
+                        "name": { "type": "string" },
+                        "image": { "type": "string", "format": "uri" },
+                        "club": { "type": "string" },
+                        "clubLogo": { "type": "string", "format": "uri" },
+                        "fullName": { "type": "string" },
+                        "age": { "type": "string" },
+                        "birthplace": { "type": "string" },
+                        "height": { "type": "string" },
+                        "nationality": { "type": "string" },
+                        "position": { "type": "string" },
+                        "foot": { "type": "string" },
+                        "agent": { "type": "string" },
+                        "joined": { "type": "string" },
+                        "contract": { "type": "string" },
+                        "marketValue": { "type": "string" },
+                        "stats": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "competition": { "type": "string" },
+                              "apps": { "type": "string" },
+                              "goals": { "type": "string" },
+                              "assists": { "type": "string" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter 'id' tidak boleh kosong"
+          },
+          "500": {
+            "description": "Gagal mengambil data"
           }
         }
       }
