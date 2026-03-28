@@ -17,7 +17,8 @@
     { "name": "News" },
     { "name": "Search Tools" },
     { "name": "Maker" },
-    { "name": "Random" }
+    { "name": "Random" },
+    { "name": "Tools" }
   ],
   "paths": {
     "/ai/copilot": {
@@ -854,7 +855,7 @@
                   "type": "object",
                   "properties": {
                     "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
                     "query": { "type": "string", "example": "Ronaldo" },
                     "result": {
                       "type": "object",
@@ -984,7 +985,7 @@
                   "type": "object",
                   "properties": {
                     "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
                     "query": { "type": "string", "example": "Messi" },
                     "total": { "type": "integer", "example": 5 },
                     "results": {
@@ -1055,7 +1056,7 @@
                   "type": "object",
                   "properties": {
                     "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
                     "query": { "type": "string", "example": "Jokowi" },
                     "mode": { "type": "string", "example": "simple" },
                     "result": {
@@ -1130,7 +1131,7 @@
                   "type": "object",
                   "properties": {
                     "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "ZoYanz" },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
                     "query": { "type": "string", "example": "Bandung" },
                     "total": { "type": "integer", "example": 1250 },
                     "results": {
@@ -1234,7 +1235,7 @@
                     },
                     "creator": {
                       "type": "string",
-                      "example": "ZoYanz"
+                      "example": "Azor & Yanz"
                     },
                     "result": {
                       "type": "object",
@@ -1271,6 +1272,86 @@
                       "type": "string",
                       "example": "Gagal mengambil data ppcouple: ..."
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tools/catbox": {
+      "post": {
+        "summary": "Upload File ke Catbox",
+        "description": "Upload file ke Catbox.moe dan mendapatkan URL publik. Mendukung berbagai format file.",
+        "tags": ["Tools"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File yang akan diupload (max 200MB)"
+                  }
+                },
+                "required": ["file"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File berhasil diupload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": true },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "url": { "type": "string", "format": "uri", "example": "https://files.catbox.moe/xxxxxx.jpg" },
+                        "filename": { "type": "string", "example": "gambar.jpg" },
+                        "size": { "type": "integer", "example": 123456 },
+                        "mimetype": { "type": "string", "example": "image/jpeg" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Tidak ada file yang diupload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "error": { "type": "string", "example": "Tidak ada file yang diupload. Pastikan field name 'file'" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Gagal upload ke Catbox",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "boolean", "example": false },
+                    "creator": { "type": "string", "example": "Azor & Yanz" },
+                    "error": { "type": "string", "example": "Gagal upload ke Catbox" }
                   }
                 }
               }
