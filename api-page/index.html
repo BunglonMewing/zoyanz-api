@@ -3,554 +3,455 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="ZoYanz APIs — Powerful API platform for modern applications.">
-    <meta property="og:title" content="ZoYanz APIs">
-    <meta property="og:description" content="Jelajahi berbagai endpoint API kami dengan antarmuka yang modern.">
+    <meta name="description" content="Dokumentasi API modern dan antarmuka pengujian yang interaktif. Jelajahi berbagai endpoint API kami dengan mudah.">
+    <meta name="keywords" content="API, Dokumentasi API, REST API, ZoYanz APIs, Azor Ceha, Alat Pengembang">
+    <meta name="author" content="Azor Ceha">
+    <meta property="og:type" content="website">
     <meta property="og:image" content="https://zoyanz-api.vercel.app/src/banner.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:title" content="ZoYanz APIs">
+    <meta property="og:description" content="Jelajahi berbagai endpoint API kami dengan antarmuka yang modern dan mudah digunakan.">
+    <meta name="twitter:image" content="https://zoyanz-api.vercel.app/src/banner.jpg">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="image" content="https://zoyanz-api.vercel.app/src/banner.jpg">
     <link rel="icon" href="https://zoyanz-api.vercel.app/src/icon.png" type="image/png">
-    <title>ZoYanz APIs</title>
+    <title id="page">ZoYanz APIs V1.</title>
 
+    <script src="https://cdn.tailwindcss.com/"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg: #080c10;
-            --surface: #0d1117;
-            --surface2: #111820;
-            --border: rgba(0, 255, 200, 0.08);
-            --border-hover: rgba(0, 255, 200, 0.3);
-            --accent: #00ffc8;
-            --accent2: #00b8ff;
-            --text: #e2f0ff;
-            --muted: #5a7080;
-            --danger: #ff4d6d;
-            --radius: 2px;
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['Ubuntu Mono', 'monospace'],
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
         }
+    </script>
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 2px; }
+    <style>
+        :root {
+            --background: #f9fbff;
+            --foreground: #2c3e50;
+            --card: #ffffff;
+            --card-foreground: #2c3e50;
+            --primary: #3498db;
+            --primary-foreground: #ffffff;
+            --secondary: #85c1e9;
+            --accent: #48d1cc;
+            --muted: #f1f5f9;
+            --muted-foreground: #7f8c8d;
+            --border: rgba(0, 0, 0, 0.08);
+            --radius: 0.5rem;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
 
         body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            min-height: 100vh;
-            overflow-x: hidden;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* noise overlay */
-        body::before {
-            content: '';
+        #mouse-spotlight {
             position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-            opacity: 0.03;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
+            background: radial-gradient(600px circle at 0px 0px, rgba(52, 152, 219, 0.08), transparent 80%);
+            transition: background 0.1s ease-out;
         }
 
-        /* grid bg */
-        body::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
+        header, .bg-card {
+            background-color: var(--card) !important;
+            border-color: var(--border) !important;
+            box-shadow: var(--shadow);
         }
 
-        /* loader */
+        .bg-card-hover:hover {
+            border-color: var(--primary) !important;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .bg-primary {
+             background-color: var(--primary);
+             color: var(--primary-foreground);
+        }
+
+        .bg-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: var(--shadow);
+        }
+
+        .text-primary { color: var(--primary); }
+        .text-foreground { color: var(--foreground); }
+        .text-muted-foreground { color: var(--muted-foreground); }
+
+        .border-primary { border-color: var(--primary); }
+        .border-default { border-color: var(--border); }
+
+        ::-webkit-scrollbar {
+            display: none !important;
+        }
+
         #loader {
-            position: fixed; inset: 0;
-            background: var(--bg);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-            flex-direction: column; gap: 1rem;
-        }
-        #loader.gone { opacity: 0; visibility: hidden; }
-        .loader-ring {
-            width: 40px; height: 40px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-        .loader-text {
-            font-size: 10px; color: var(--muted); letter-spacing: 4px; text-transform: uppercase;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* header */
-        header {
-            position: sticky; top: 0; z-index: 40;
-            border-bottom: 1px solid var(--border);
-            background: rgba(8,12,16,0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .header-inner {
-            max-width: 680px; margin: 0 auto; padding: 1rem 2rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo {
-            display: flex; align-items: center; gap: 0.75rem;
-        }
-        .logo-mark {
-            width: 28px; height: 28px;
-            border: 1.5px solid var(--accent);
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-        }
-        .logo-mark::before {
-            content: '';
-            position: absolute;
-            inset: 2px;
-            background: var(--accent);
-            opacity: 0.15;
-        }
-        .logo-mark i { font-size: 11px; color: var(--accent); position: relative; }
-        .logo-name {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800;
-            font-size: 15px;
-            letter-spacing: -0.5px;
-            color: var(--text);
-        }
-        .logo-name span { color: var(--accent); }
-        .badge {
-            font-size: 9px;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            padding: 2px 6px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .header-right { display: flex; align-items: center; gap: 1rem; }
-        .status-dot {
-            display: flex; align-items: center; gap: 6px;
-            font-size: 10px; color: var(--muted);
-        }
-        .dot {
-            width: 6px; height: 6px; border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 8px var(--accent);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity: 0.4; } }
-
-        /* main */
-        main {
-            position: relative; z-index: 1;
-            max-width: 680px; margin: 0 auto;
-            padding: 3.5rem 2rem 4rem;
-        }
-
-        /* hero */
-        .hero { margin-bottom: 3rem; }
-        .hero-label {
-            font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-            color: var(--accent); margin-bottom: 1.25rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .hero-label::before {
-            content: ''; display: block;
-            width: 24px; height: 1px; background: var(--accent);
-        }
-        .hero-title {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(2rem, 6vw, 3rem);
-            font-weight: 800;
-            line-height: 1.05;
-            letter-spacing: -1.5px;
-            color: var(--text);
-            margin-bottom: 1rem;
-        }
-        .hero-title .hl {
-            color: var(--accent);
-            text-shadow: 0 0 40px rgba(0,255,200,0.3);
-        }
-        .hero-desc {
-            font-size: 12px; line-height: 1.8;
-            color: var(--muted);
-            margin-bottom: 2rem; max-width: 440px;
-        }
-        .hero-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            background: var(--accent); color: var(--bg);
-            padding: 0.6rem 1.4rem; font-size: 11px;
-            font-weight: 700; letter-spacing: 1px;
-            text-transform: uppercase; text-decoration: none;
-            border: none; cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative; overflow: hidden;
-        }
-        .btn-primary::after {
-            content: '';
-            position: absolute; inset: 0;
-            background: white;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .btn-primary:hover::after { opacity: 0.15; }
-        .btn-ghost {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            color: var(--muted); font-size: 11px;
-            text-decoration: none; letter-spacing: 0.5px;
-            transition: color 0.2s;
-            padding: 0.6rem 0;
-        }
-        .btn-ghost:hover { color: var(--text); }
-
-        /* stats */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            border: 1px solid var(--border);
-            margin-bottom: 2.5rem;
-            background: var(--surface);
-        }
-        .stat {
-            padding: 1.25rem 1rem; text-align: center;
-            border-right: 1px solid var(--border);
-            transition: background 0.2s;
-        }
-        .stat:last-child { border-right: none; }
-        .stat:hover { background: var(--surface2); }
-        .stat-val {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.5rem; font-weight: 800;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 0.25rem;
-        }
-        .stat-label { font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
-
-        /* section title */
-        .section-title {
-            font-size: 9px; color: var(--muted);
-            letter-spacing: 3px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
-        .section-title::after {
-            content: ''; flex: 1; height: 1px; background: var(--border);
-        }
-
-        /* features */
-        .features { margin-bottom: 2.5rem; display: grid; gap: 1px; background: var(--border); border: 1px solid var(--border); }
-        .feature-card {
-            background: var(--surface);
-            padding: 1.25rem 1.5rem;
-            display: flex; align-items: flex-start; gap: 1rem;
-            transition: background 0.2s ease;
-            cursor: default;
-        }
-        .feature-card:hover { background: var(--surface2); }
-        .feature-icon-wrap {
-            width: 34px; height: 34px;
-            border: 1px solid var(--border-hover);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .feature-card:hover .feature-icon-wrap {
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(0,255,200,0.15);
-        }
-        .feature-icon-wrap i { font-size: 13px; color: var(--accent); }
-        .feature-name {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700; font-size: 13px;
-            color: var(--text); margin-bottom: 3px;
-        }
-        .feature-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
-
-        /* getting started */
-        .getting-started {
-            border: 1px solid var(--border);
-            background: var(--surface);
-            padding: 1.75rem;
-            margin-bottom: 2.5rem;
-        }
-        .gs-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 14px; font-weight: 700;
-            color: var(--text); margin-bottom: 1.5rem;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .gs-title i { color: var(--accent); font-size: 14px; }
-        .steps { display: grid; gap: 1rem; }
-        .step {
-            display: flex; align-items: flex-start; gap: 1rem;
-            transition: transform 0.2s;
-        }
-        .step:hover { transform: translateX(4px); }
-        .step-num {
-            width: 28px; height: 28px;
-            border: 1px dashed var(--border-hover);
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-            font-size: 11px; color: var(--accent);
-            font-weight: 700;
-        }
-        .step-content {}
-        .step-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-        .step-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
-
-        /* links */
-        .links-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1px; background: var(--border);
-            border: 1px solid var(--border);
-            margin-bottom: 3rem;
-        }
-        .link-card {
-            background: var(--surface);
-            padding: 1rem 1.25rem;
-            display: flex; align-items: center; gap: 0.75rem;
-            text-decoration: none; color: var(--muted);
-            font-size: 11px;
-            transition: all 0.2s;
-        }
-        .link-card:hover {
-            background: var(--surface2);
-            color: var(--text);
-        }
-        .link-card:hover i { color: var(--accent); }
-        .link-card i { font-size: 12px; transition: color 0.2s; }
-        .link-card .arrow { margin-left: auto; font-size: 10px; opacity: 0.4; }
-
-        /* footer */
-        footer {
-            text-align: center;
-            font-size: 10px; color: var(--muted);
-            padding-bottom: 2rem;
-            line-height: 2;
-            letter-spacing: 0.5px;
-        }
-        footer a { color: var(--muted); text-decoration: none; }
-        footer a:hover { color: var(--accent); }
-
-        /* animations */
-        .fade-up {
-            opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-        }
-        .fade-up.show { opacity: 1; transform: translateY(0); }
-
-        /* glow orb */
-        .glow-orb {
             position: fixed;
-            width: 600px; height: 600px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,255,200,0.04) 0%, transparent 70%);
-            pointer-events: none;
-            z-index: 0;
-            transition: all 0.15s ease-out;
-            top: -200px; left: -200px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-on-load {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+            transition-delay: var(--delay, 0s);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-icon {
+            transition: transform 0.3s ease;
+        }
+        .bg-card-hover:hover .feature-icon {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .stat-item {
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border-radius: var(--radius);
+            padding: 0.5rem 0;
+        }
+        .stat-item:hover {
+            transform: translateY(-3px);
+            background-color: var(--card);
+            box-shadow: var(--shadow);
+        }
+
+        .step-item {
+            transition: transform 0.3s ease;
+        }
+        .step-item:hover {
+            transform: translateX(5px);
+        }
+        .step-number {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-item:hover .step-number {
+             transform: scale(1.1);
+             box-shadow: var(--shadow);
         }
     </style>
 </head>
-<body>
+<body class="text-foreground antialiased font-mono min-h-screen">
 
-<div class="glow-orb" id="orb"></div>
+    <div id="mouse-spotlight"></div>
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
 
-<div id="loader">
-    <div class="loader-ring"></div>
-    <div class="loader-text">Initializing</div>
+    <header class="sticky top-0 z-40 bg-card border-b py-5">
+        <div class="max-w-2xl mx-auto px-8 flex justify-between items-center">
+            <div class="flex items-center"></div>
+            <div class="flex items-center space-x-4"></div>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-8 py-10">
+        <div class="text-left mb-6">
+            <p class="text-muted-foreground text-xs mb-4 animate-on-load" style="animation-delay: 0.1s;">Hi Developer! Welcome To</p>
+            <h2 class="flex flex-wrap items-center gap-1 text-3xl text-foreground font-bold mb-1.5 animate-on-load" style="animation-delay: 0.2s;">
+    <span class="flex-grow text-black">ZoYanz APIs</span>
+    <span class="text-xs font-bold text-white bg-black px-3 py-1 whitespace-nowrap">
+        v1.0
+    </span>
+</h2>
+            <p class="text-muted-foreground text-xs mx-auto mb-4 animate-on-load" style="animation-delay: 0.3s;">Powerful API platform for modern applications</p>
+
+            <div class="mb-4 animate-on-load" style="animation-delay: 0.4s;">
+    <a href="/docs" class="inline-block bg-black text-white px-6 py-2 rounded text-sm font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+        <i class="fas fa-rocket mr-2"></i>START
+    </a>
 </div>
 
-<header>
-    <div class="header-inner">
-        <div class="logo">
-            <div class="logo-mark"><i class="fas fa-bolt"></i></div>
-            <div class="logo-name">Zo<span>Yanz</span></div>
-            <div class="badge">v1.0</div>
-        </div>
-        <div class="header-right">
-            <div class="status-dot">
-                <div class="dot"></div>
-                <span>online</span>
-            </div>
-        </div>
-    </div>
-</header>
-
-<main>
-    <!-- Hero -->
-    <div class="hero fade-up">
-        <div class="hero-label">API Platform</div>
-        <h1 class="hero-title">Build Faster<br>With <span class="hl">ZoYanz</span></h1>
-        <p class="hero-desc">Platform API modern yang powerful. Ribuan endpoint siap pakai, dokumentasi lengkap, dan integrasi yang mudah untuk semua kebutuhan proyekmu.</p>
-        <div class="hero-actions">
-            <a href="/docs" class="btn-primary"><i class="fas fa-rocket"></i> Explore Docs</a>
-            <a href="https://github.com/AzorCeHa" target="_blank" class="btn-ghost"><i class="fab fa-github"></i> GitHub</a>
-        </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-grid fade-up">
-        <div class="stat">
-            <div class="stat-val" id="total-endpoints">—</div>
-            <div class="stat-label">Endpoints</div>
-        </div>
-        <div class="stat">
-            <div class="stat-val" id="total-categories">—</div>
-            <div class="stat-label">Categories</div>
-        </div>
-        <div class="stat">
-            <div class="stat-val">24/7</div>
-            <div class="stat-label">Support</div>
-        </div>
-    </div>
-
-    <!-- Features -->
-    <div class="section-title fade-up">Features</div>
-    <div class="features fade-up" id="features">
-        <div class="feature-card">
-            <div class="feature-icon-wrap"><i class="fas fa-bolt"></i></div>
-            <div>
-                <div class="feature-name">Fast & Reliable</div>
-                <div class="feature-desc">High-performance endpoints dengan latency rendah dan uptime tinggi untuk produksi.</div>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon-wrap"><i class="fas fa-shield-alt"></i></div>
-            <div>
-                <div class="feature-name">Secure</div>
-                <div class="feature-desc">Enkripsi enterprise-grade memastikan data kamu aman setiap saat.</div>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon-wrap"><i class="fas fa-code"></i></div>
-            <div>
-                <div class="feature-name">Easy Integration</div>
-                <div class="feature-desc">REST API sederhana dengan dokumentasi interaktif. Integrasi dalam hitungan menit.</div>
-            </div>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon-wrap"><i class="fas fa-chart-line"></i></div>
-            <div>
-                <div class="feature-name">Analytics</div>
-                <div class="feature-desc">Pantau penggunaan API secara real-time dengan dashboard analytics detail.</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Getting Started -->
-    <div class="getting-started fade-up">
-        <div class="gs-title"><i class="fas fa-terminal"></i> Getting Started</div>
-        <div class="steps">
-            <div class="step">
-                <div class="step-num">01</div>
-                <div class="step-content">
-                    <div class="step-name">Pilih Kategori</div>
-                    <div class="step-desc">Browse kategori API yang tersedia dan pilih sesuai kebutuhan proyekmu.</div>
+            <div class="text-xs space-y-1 animate-on-load" style="animation-delay: 0.5s;">
+                <div>
+                    <a href="#features" class="text-foreground underline hover:text-primary">Features</a>
                 </div>
-            </div>
-            <div class="step">
-                <div class="step-num">02</div>
-                <div class="step-content">
-                    <div class="step-name">Baca Dokumentasi</div>
-                    <div class="step-desc">Cek parameter endpoint, format response, dan contoh penggunaan yang tersedia.</div>
+                <div>
+                    <a href="https://github.com/AzorCeHa" target="_blank" class="text-foreground underline hover:text-primary">GitHub</a>
                 </div>
-            </div>
-            <div class="step">
-                <div class="step-num">03</div>
-                <div class="step-content">
-                    <div class="step-name">Kirim Request</div>
-                    <div class="step-desc">Buat HTTP request dan integrasikan JSON response ke dalam aplikasimu.</div>
+                <div>
+                  <a href="https://whatsapp.com/channel/0029Vb6aaSyADTOLBm9HSl3h" target="_blank" class="text-foreground underline hover:text-primary">
+                    WhatsApp Channel
+                  </a>
+                </div>
+                <div>
+                  <a href="https://t.me/azorceha" target="_blank" class="text-foreground underline hover:text-primary">
+                    Contact Me
+                  </a>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Links -->
-    <div class="section-title fade-up">Links</div>
-    <div class="links-grid fade-up">
-        <a href="https://github.com/AzorCeHa" target="_blank" class="link-card">
-            <i class="fab fa-github"></i> GitHub
-            <span class="arrow">↗</span>
-        </a>
-        <a href="https://whatsapp.com/channel/0029Vb6aaSyADTOLBm9HSl3h" target="_blank" class="link-card">
-            <i class="fab fa-whatsapp"></i> WhatsApp Channel
-            <span class="arrow">↗</span>
-        </a>
-        <a href="https://t.me/azorceha" target="_blank" class="link-card">
-            <i class="fab fa-telegram"></i> Contact
-            <span class="arrow">↗</span>
-        </a>
-        <a href="/docs" class="link-card">
-            <i class="fas fa-book"></i> API Docs
-            <span class="arrow">→</span>
-        </a>
-    </div>
-
-    <footer>
-        <div>© <span id="year"></span> ZoYanz APIs — All Rights Reserved.</div>
-        <div>
-            <a href="/privacy-policy">Privacy Policy</a> &nbsp;·&nbsp;
-            <a href="/terms-of-service">Terms of Service</a>
+<div class="bg-card border-default p-4 my-3 animate-on-scroll">
+    <div class="grid grid-cols-3 gap-4">
+        <div class="text-center stat-item">
+            <div id="total-endpoints" class="text-lg font-bold text-foreground">0</div>
+            <div class="text-xs text-muted-foreground">Endpoints</div>
         </div>
-    </footer>
-</main>
+        <div class="text-center stat-item">
+            <div id="total-categories" class="text-lg font-bold text-foreground">0</div>
+            <div class="text-xs text-muted-foreground">Categories</div>
+        </div>
+        <div class="text-center stat-item">
+            <div class="text-lg font-bold text-foreground">24/7</div>
+            <div class="text-xs text-muted-foreground">Support</div>
+        </div>
+    </div>
+</div>
 
 <script>
-    // Stats from openapi.json
-    async function loadStats() {
-        try {
-            const res = await fetch('/src/openapi.json');
-            const data = await res.json();
-            document.getElementById('total-endpoints').textContent = Object.keys(data.paths || {}).length;
-            document.getElementById('total-categories').textContent = new Set((data.tags || []).map(t => t.name)).size;
-        } catch(e) { console.warn('Stats failed', e); }
+async function updateStats() {
+    try {
+        // Load JSON OpenAPI
+        const response = await fetch('/src/openapi.json');
+        const data = await response.json();
+
+        // Total endpoints
+        const totalEndpoints = Object.keys(data.paths || {}).length;
+
+        // Total kategori unik
+        const categories = new Set((data.tags || []).map(tag => tag.name));
+        const totalCategories = categories.size;
+
+        // Update HTML
+        document.getElementById('total-endpoints').textContent = totalEndpoints;
+        document.getElementById('total-categories').textContent = totalCategories;
+    } catch (err) {
+        console.error('Gagal load openapi.json', err);
     }
+}
 
-    // Loader
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('loader').classList.add('gone');
-        }, 400);
-    });
-
-    // Year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Glow orb follows cursor
-    const orb = document.getElementById('orb');
-    document.addEventListener('mousemove', e => {
-        orb.style.left = (e.clientX - 300) + 'px';
-        orb.style.top = (e.clientY - 300) + 'px';
-    });
-
-    // Scroll animations
-    const observer = new IntersectionObserver(entries => {
-        entries.forEach((e, i) => {
-            if (e.isIntersecting) {
-                e.target.style.transitionDelay = (i * 0.05) + 's';
-                e.target.classList.add('show');
-                observer.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-    loadStats();
+// Jalankan saat halaman siap
+updateStats();
 </script>
 
+        <div class="space-y-3" id="features">
+    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center min-w-0 flex-1">
+                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
+                    <i class="fas fa-bolt text-black text-sm"></i>
+                </div>
+                <div class="flex flex-col min-w-0 flex-1">
+                    <h3 class="font-bold text-sm text-foreground truncate">Fast & Reliable</h3>
+                    <p class="text-xs text-muted-foreground">High-performance API endpoints with low latency</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.1s;">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center min-w-0 flex-1">
+                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
+                    <i class="fas fa-shield-alt text-black text-sm"></i>
+                </div>
+                <div class="flex flex-col min-w-0 flex-1">
+                    <h3 class="font-bold text-sm text-foreground truncate">Secure</h3>
+                    <p class="text-xs text-muted-foreground">Enterprise-grade security and encryption</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.2s;">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center min-w-0 flex-1">
+                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
+                    <i class="fas fa-code text-black text-sm"></i>
+                </div>
+                <div class="flex flex-col min-w-0 flex-1">
+                    <h3 class="font-bold text-sm text-foreground truncate">Easy Integration</h3>
+                    <p class="text-xs text-muted-foreground">Simple REST API with clear documentation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-card border-default bg-card-hover transition-all duration-300 rounded-none animate-on-scroll" style="--delay: 0.3s;">
+        <div class="px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center min-w-0 flex-1">
+                <div class="feature-icon border-2 border-black w-8 h-8 flex items-center justify-center flex-shrink-0 mr-4">
+                    <i class="fas fa-chart-line text-black text-sm"></i>
+                </div>
+                <div class="flex flex-col min-w-0 flex-1">
+                    <h3 class="font-bold text-sm text-foreground truncate">Analytics</h3>
+                    <p class="text-xs text-muted-foreground">Detailed usage analytics and monitoring</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="my-8"></div>
+<div class="bg-card border-default p-6 mb-6 rounded-none animate-on-scroll">
+    <h3 class="flex items-center gap-2 font-bold text-lg text-foreground mb-5">
+        <svg class="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        Getting Started
+    </h3>
+
+    <div class="space-y-4">
+        <div class="flex items-start gap-4 step-item">
+            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">1</div>
+            <div class="flex-1">
+                <h4 class="font-bold text-sm text-foreground mb-1">Choose Your Category</h4>
+                <p class="text-xs text-muted-foreground">Browse through available API categories on sidebar and select what you need.</p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4 step-item">
+            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">2</div>
+            <div class="flex-1">
+                <h4 class="font-bold text-sm text-foreground mb-1">Read the Docs</h4>
+                <p class="text-xs text-muted-foreground">Check endpoint parameters, response format, and example usage.</p>
+            </div>
+        </div>
+
+        <div class="flex items-start gap-4 step-item">
+            <div class="step-number border-2 border-dashed border-black text-black w-8 h-8 flex items-center justify-center flex-shrink-0 font-bold text-sm rounded-none">3</div>
+            <div class="flex-1">
+                <h4 class="font-bold text-sm text-foreground mb-1">Make Your Request</h4>
+                <p class="text-xs text-muted-foreground">Send HTTP requests and integrate the JSON response into your app.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="flex flex-col mt-10 text-center space-y-2 animate-on-scroll">
+  <p class="text-muted-foreground" style="font-size: 0.7rem; line-height: 1rem;">
+    © <span id="year"></span> ZoYanz APIs — All Rights Reserved.
+  </p>
+  <p class="text-muted-foreground space-x-3" style="font-size: 0.7rem; line-height: 1rem;">
+    <a href="/privacy-policy" class="hover:underline hover:text-black">Privacy Policy</a>
+    <span aria-hidden="true">|</span>
+    <a href="/terms-of-service" class="hover:underline hover:text-black">Terms of Service</a>
+  </p>
+</div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loader = document.getElementById('loader');
+            loader.classList.add('hidden');
+
+            document.getElementById("year").textContent = new Date().getFullYear();
+
+            const spotlight = document.getElementById('mouse-spotlight');
+            if (spotlight) {
+                document.addEventListener('mousemove', (e) => {
+                    spotlight.style.background = `radial-gradient(600px circle at ${e.clientX}px ${e.clientY}px, rgba(52, 152, 219, 0.08), transparent 80%)`;
+                });
+            }
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observerCallback = (entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            };
+
+            const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+            document.querySelectorAll('.animate-on-scroll').forEach(target => {
+                observer.observe(target);
+            });
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
