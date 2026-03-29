@@ -1,867 +1,944 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="ZoYanz API Documentation — Browse and test all endpoints.">
-    <meta name="theme-color" content="#080c10">
-    <title>ZoYanz APIs — Docs</title>
+    <meta name="description" content="Browse through our collection of code snippets, scripts, and tools. Find what you need or discover something new.">
+    <meta name="theme-color" content="#ffffff">
+    <title>ZoYanz API.</title>
     <link rel="icon" href="/src/icon.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'mono': ['Ubuntu Mono', 'monospace'],
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --bg: #080c10;
-            --surface: #0d1117;
-            --surface2: #111820;
-            --surface3: #0a1520;
-            --border: rgba(0,255,200,0.08);
-            --border-h: rgba(0,255,200,0.25);
-            --accent: #00ffc8;
-            --accent2: #00b8ff;
-            --text: #e2f0ff;
-            --muted: #4a6070;
-            --muted2: #7a9aaa;
-            --green: #00ffc8;
-            --yellow: #ffc843;
-            --red: #ff4d6d;
-            --blue: #00b8ff;
+        ::-webkit-scrollbar {
+            display: none !important;
         }
-
-        ::-webkit-scrollbar { width: 3px; height: 3px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border-h); }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Space Mono', monospace;
-            min-height: 100vh;
+        
+        .glass {
+            backdrop-filter: blur(16px) saturate(180%);
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.125);
         }
-
-        body::after {
-            content: '';
-            position: fixed; inset: 0;
-            background-image:
-                linear-gradient(rgba(0,255,200,0.025) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,255,200,0.025) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none; z-index: 0;
-        }
-
-        /* ── Sidebar ── */
-        #sidebar {
-            position: fixed; top: 0; right: 0;
-            height: 100%; width: 280px;
-            background: var(--surface);
-            border-left: 1px solid var(--border-h);
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-            z-index: 100;
-            backdrop-filter: blur(20px);
-        }
-        #sidebar.open { transform: translateX(0); }
-        .sidebar-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .sidebar-logo {
-            font-family: 'Syne', sans-serif;
-            font-weight: 800; font-size: 14px; color: var(--text);
-        }
-        .sidebar-logo span { color: var(--accent); }
-        .sidebar-close {
-            background: none; border: 1px solid var(--border);
-            color: var(--muted2); cursor: pointer;
-            width: 32px; height: 32px;
-            display: flex; align-items: center; justify-content: center;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .sidebar-close:hover { border-color: var(--border-h); color: var(--text); }
-        .sidebar-body { padding: 1.5rem; }
-        .sidebar-nav-label {
-            font-size: 9px; color: var(--muted); letter-spacing: 3px;
-            text-transform: uppercase; margin-bottom: 0.75rem; margin-top: 1.25rem;
-        }
-        .sidebar-nav-label:first-child { margin-top: 0; }
-        .sidebar-link {
-            display: flex; align-items: center; gap: 0.75rem;
-            padding: 0.6rem 0.75rem;
-            color: var(--muted2); font-size: 12px;
-            text-decoration: none; border: 1px solid transparent;
-            transition: all 0.15s;
-        }
-        .sidebar-link:hover {
-            color: var(--text); border-color: var(--border);
-            background: var(--surface2);
-        }
-        .sidebar-link i { font-size: 14px; color: var(--accent); }
-
-        /* ── Overlay ── */
-        #overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(4px);
-            opacity: 0; visibility: hidden;
-            transition: all 0.3s; z-index: 90;
-        }
-        #overlay.show { opacity: 1; visibility: visible; }
-
-        /* ── Header ── */
-        header {
-            position: sticky; top: 0; z-index: 50;
-            border-bottom: 1px solid var(--border);
-            background: rgba(8,12,16,0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        .header-inner {
-            max-width: 760px; margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .logo-wrap { display: flex; align-items: center; gap: 0.75rem; }
-        .logo-mark {
-            width: 26px; height: 26px;
-            border: 1.5px solid var(--accent);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .logo-mark i { font-size: 11px; color: var(--accent); }
-        .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; }
-        .logo-text span { color: var(--accent); }
-        .badge {
-            font-size: 9px; border: 1px solid var(--border-h);
-            color: var(--accent); padding: 2px 6px; letter-spacing: 1px;
-        }
-        .header-right { display: flex; align-items: center; gap: 0.75rem; }
-        .menu-btn {
-            background: none; border: 1px solid var(--border);
-            color: var(--muted2); cursor: pointer;
-            width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            transition: border-color 0.2s, color 0.2s;
-        }
-        .menu-btn:hover { border-color: var(--border-h); color: var(--text); }
-
-        /* ── Main ── */
-        main {
-            position: relative; z-index: 1;
-            max-width: 760px; margin: 0 auto;
-            padding: 2.5rem 2rem 4rem;
-        }
-
-        /* ── Notifications ── */
-        .notif-section { margin-bottom: 2rem; }
-        .notif-header {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 0.75rem;
-        }
-        .notif-title {
-            font-size: 9px; color: var(--muted);
-            letter-spacing: 3px; text-transform: uppercase;
-            display: flex; align-items: center; gap: 0.5rem;
-        }
-        .notif-title i { font-size: 12px; color: var(--accent); }
-        .notif-badge {
-            background: var(--accent); color: var(--bg);
-            font-size: 9px; font-weight: 700;
-            padding: 2px 6px; letter-spacing: 0.5px;
-        }
-        .notif-card {
-            background: var(--surface); border: 1px solid var(--border);
-            padding: 0.875rem 1rem; margin-bottom: 4px;
-            font-size: 11px;
-            transition: border-color 0.2s;
-        }
-        .notif-card:hover { border-color: var(--border-h); }
-        .notif-card.read { opacity: 0.5; }
-        .notif-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-        .notif-name { font-weight: 700; color: var(--text); margin-bottom: 3px; }
-        .notif-msg { color: var(--muted2); line-height: 1.5; }
-        .notif-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-        .unread-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent); }
-        .notif-date { color: var(--muted); font-size: 10px; }
-
-        /* ── Search ── */
-        .search-wrap { margin-bottom: 1.5rem; position: relative; }
-        .search-icon {
-            position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%);
-            color: var(--muted); font-size: 14px; pointer-events: none;
-        }
-        #searchInput {
-            width: 100%; background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text); font-family: 'Space Mono', monospace;
-            font-size: 12px; padding: 0.75rem 1rem 0.75rem 2.5rem;
-            outline: none; transition: border-color 0.2s;
-        }
-        #searchInput::placeholder { color: var(--muted); }
-        #searchInput:focus { border-color: var(--border-h); }
-
-        /* ── API List ── */
-        #apiList { display: grid; gap: 4px; }
-        .category-group {}
-        .cat-header {
-            background: var(--surface); border: 1px solid var(--border);
-            width: 100%; text-align: left; cursor: pointer;
-            padding: 0.875rem 1rem;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: border-color 0.2s, background 0.2s;
-            color: var(--text);
-        }
-        .cat-header:hover { border-color: var(--border-h); background: var(--surface2); }
-        .cat-left { display: flex; align-items: center; gap: 0.75rem; }
-        .cat-icon {
-            width: 28px; height: 28px; background: rgba(0,255,200,0.08);
-            border: 1px solid var(--border-h);
-            display: flex; align-items: center; justify-content: center;
-        }
-        .cat-icon i { font-size: 12px; color: var(--accent); }
-        .cat-name {
-            font-family: 'Syne', sans-serif;
-            font-weight: 700; font-size: 13px;
-            color: var(--text);
-        }
-        .cat-count {
-            font-size: 9px; color: var(--muted); margin-left: 4px;
-        }
-        .cat-chevron { color: var(--muted); transition: transform 0.2s; }
-        .cat-chevron.open { transform: rotate(180deg); }
-
-        /* endpoints */
-        .cat-body { display: grid; gap: 2px; padding: 2px 0 0; }
-        .api-item {
-            background: var(--surface); border: 1px solid var(--border);
-        }
-        .ep-header {
-            width: 100%; text-align: left; cursor: pointer;
-            padding: 0.75rem 1rem;
-            display: flex; align-items: center; justify-content: space-between;
-            background: none; color: var(--text);
-            transition: background 0.15s;
-        }
-        .ep-header:hover { background: var(--surface2); }
-        .ep-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 1; }
-        .method-badge {
-            font-size: 9px; font-weight: 700; padding: 3px 7px;
-            letter-spacing: 0.5px; flex-shrink: 0;
-        }
-        .method-GET { background: rgba(0,255,200,0.1); color: var(--accent); border: 1px solid rgba(0,255,200,0.3); }
-        .method-POST { background: rgba(0,184,255,0.1); color: var(--blue); border: 1px solid rgba(0,184,255,0.3); }
-        .method-PUT { background: rgba(255,200,67,0.1); color: var(--yellow); border: 1px solid rgba(255,200,67,0.3); }
-        .method-DELETE { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
-        .ep-info { min-width: 0; flex: 1; }
-        .ep-path {
-            font-family: 'Space Mono', monospace;
-            font-size: 11px; color: var(--text);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .ep-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 2px; }
-        .ep-name { font-size: 10px; color: var(--muted2); }
-        .status-pill {
-            font-size: 8px; padding: 1px 5px; letter-spacing: 0.5px;
-        }
-        .status-ready { background: rgba(0,255,200,0.08); color: var(--accent); border: 1px solid rgba(0,255,200,0.2); }
-        .status-deprecated { background: rgba(255,200,67,0.08); color: var(--yellow); border: 1px solid rgba(255,200,67,0.2); }
-        .ep-chevron { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; font-size: 16px; }
-        .ep-chevron.open { transform: rotate(180deg); }
-
-        /* endpoint body */
-        .ep-body {
-            border-top: 1px solid var(--border);
-            background: var(--surface3);
-            padding: 1.25rem;
-        }
-        .ep-desc { font-size: 11px; color: var(--muted2); line-height: 1.7; margin-bottom: 1rem; }
-        .block-label {
-            font-size: 9px; color: var(--muted); letter-spacing: 2px;
-            text-transform: uppercase; margin-bottom: 0.5rem;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .block-label i { font-size: 12px; color: var(--accent); margin-right: 4px; }
-
-        /* form */
-        .form-fields { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
-        .field-wrap {}
-        .field-label {
-            display: block; font-size: 10px; color: var(--muted2);
-            margin-bottom: 0.35rem;
-        }
-        .field-label .req { color: var(--red); }
-        .field-hint { font-size: 9px; color: var(--muted); margin-top: 3px; }
-        input[type=text], input[type=number], input[type=file], select, textarea {
-            width: 100%; background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text); font-family: 'Space Mono', monospace;
-            font-size: 11px; padding: 0.6rem 0.75rem;
-            outline: none; transition: border-color 0.2s;
-            border-radius: 0;
-        }
-        input:focus, select:focus, textarea:focus { border-color: var(--border-h); }
-        input::placeholder, textarea::placeholder { color: var(--muted); }
-        select option { background: var(--surface); }
-        textarea { resize: vertical; min-height: 80px; }
-        input[type=file] { padding: 0.5rem; }
-        input[type=file]::file-selector-button {
-            background: var(--surface2); color: var(--muted2);
-            border: 1px solid var(--border); padding: 3px 8px;
-            font-size: 10px; cursor: pointer; margin-right: 8px;
-        }
-
-        .btn-execute {
-            background: var(--accent); color: var(--bg);
-            border: none; padding: 0.55rem 1.25rem;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px; font-weight: 700;
-            letter-spacing: 1px; text-transform: uppercase;
-            cursor: pointer; transition: opacity 0.2s;
-        }
-        .btn-execute:hover { opacity: 0.85; }
-        .btn-clear {
-            background: none; color: var(--muted2);
-            border: 1px solid var(--border); padding: 0.55rem 1rem;
-            font-family: 'Space Mono', monospace;
-            font-size: 10px; cursor: pointer;
-            transition: border-color 0.2s, color 0.2s; margin-left: 8px;
-        }
-        .btn-clear:hover { border-color: var(--border-h); color: var(--text); }
-
-        /* response */
-        .response-section { margin-top: 1rem; }
-        .response-block { background: var(--bg); border: 1px solid var(--border); padding: 0.875rem; margin-bottom: 0.5rem; }
-        .response-block pre {
-            font-family: 'Space Mono', monospace;
-            font-size: 10px; overflow-x: auto; max-height: 320px;
-            line-height: 1.6;
-        }
-        .response-block code { font-family: inherit; }
-        .response-block .err { color: var(--red); }
-        .copy-btn {
-            background: none; border: none; cursor: pointer;
-            color: var(--muted); transition: color 0.15s; padding: 2px 4px;
-        }
-        .copy-btn:hover { color: var(--accent); }
-
-        /* HTTP status table */
-        .status-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-        .status-table th {
-            background: var(--surface2); color: var(--muted);
-            text-align: left; padding: 0.5rem 0.75rem;
-            font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
-            font-size: 9px; border-bottom: 1px solid var(--border);
-        }
-        .status-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--muted2); }
-        .status-table tr:last-child td { border-bottom: none; }
-        .status-table tr:hover td { background: var(--surface2); }
-        .sc { font-family: 'Space Mono', monospace; font-weight: 700; }
-        .sc-2 { color: var(--accent); }
-        .sc-4, .sc-5 { color: var(--red); }
-        .sc-429 { color: var(--yellow); }
-
-        .deprecated-warn {
-            background: rgba(255,200,67,0.05);
-            border: 1px solid rgba(255,200,67,0.2);
-            color: var(--yellow); font-size: 10px; padding: 0.6rem 0.875rem;
-        }
-
-        /* no results */
-        #noResults { text-align: center; padding: 3rem 0; font-size: 11px; color: var(--muted); }
-
-        /* animations */
-        @keyframes fadeSlide {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .will-fade-in { opacity: 0; }
-        .fade-in { animation: fadeSlide 0.35s ease-out forwards; }
-        .fade-out { animation: fadeSlide 0.2s ease-out reverse forwards; }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinner {
-            width: 18px; height: 18px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
+        
+        .loader {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #4a5568;
             border-radius: 50%;
-            animation: spin 0.7s linear infinite;
-            display: inline-block;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #334155 0%, #0f172a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #e2e8f0 0%, #4a5568 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px -5px rgba(235, 235, 235, 0.4);
+        }
+        
+        .copy-btn {
+            @apply text-gray-500 hover:text-black p-1 rounded-md hover:bg-gray-200 transition-colors duration-150;
+        }
+        
+        .block-title {
+            @apply text-sm font-semibold text-gray-700 mb-2 flex items-center justify-between;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .will-fade-in {
+            opacity: 0;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.98);
+            }
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.2s ease-out forwards;
         }
     </style>
 </head>
-<body>
 
-<!-- Sidebar -->
-<aside id="sidebar">
-    <div class="sidebar-header">
-        <div class="sidebar-logo">Zo<span>Yanz</span> API</div>
-        <button class="sidebar-close" id="sidebarClose">
-            <i class="material-icons" style="font-size:16px;">close</i>
-        </button>
-    </div>
-    <div class="sidebar-body">
-        <div class="sidebar-nav-label">Navigation</div>
-        <a href="/" class="sidebar-link">
-            <i class="material-icons" style="font-size:14px;">dashboard</i> Dashboard
-        </a>
-        <div class="sidebar-nav-label">Links</div>
-        <a href="https://t.me/azorceha" target="_blank" class="sidebar-link">
-            <i class="material-icons" style="font-size:14px;">arrow_outward</i> Contact
-        </a>
-        <a href="https://whatsapp.com/channel/0029Vb6aaSyADTOLBm9HSl3h" target="_blank" class="sidebar-link">
-            <i class="material-icons" style="font-size:14px;">arrow_outward</i> Channel
-        </a>
-    </div>
-</aside>
+<body class="bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-800 antialiased font-mono min-h-screen">
 
-<div id="overlay"></div>
-
-<!-- Header -->
-<header>
-    <div class="header-inner">
-        <div class="logo-wrap">
-            <div class="logo-mark"><i class="fas fa-bolt" style="font-size:10px;"></i></div>
-            <div class="logo-text">Zo<span>Yanz</span></div>
-            <div class="badge">v1.0</div>
-        </div>
-        <div class="header-right">
-            <button class="menu-btn" id="sidebarToggle">
-                <i class="material-icons" style="font-size:18px;">menu</i>
+    <aside id="sidebar" class="fixed top-0 right-0 h-full w-64 bg-white text-slate-800 border-l border-gray-200 transform translate-x-full duration-300 ease-in-out z-[100]">
+        <div class="px-8 py-4 border-b border-gray-200 flex items-center justify-end">
+            <button id="sidebarClose" class="py-2 px-3 border border-gray-200 text-slate-800 hover:border-gray-600 flex items-center justify-center">
+                <i class="material-icons text-xl">close</i>
             </button>
         </div>
-    </div>
-</header>
+<div class="p-8">
+    <nav>
+        <div class="space-y-2">
+            <a href="/" class="flex items-center py-2 px-4 text-sm border border-gray-200 text-gray-600 hover:border-gray-600">
+                <i class="material-icons text-lg mr-3">dashboard</i> Dashboard
+            </a>
+        </div>
 
-<!-- Main -->
-<main>
-    <!-- Notifications -->
-    <div class="notif-section">
-        <div class="notif-header">
-            <div class="notif-title">
-                <i class="material-icons" style="font-size:12px;">notifications</i>
-                Notifikasi
+        <p class="text-xs text-slate-700 my-4">LINKS.</p>
+        <div class="space-y-2">
+            <a href="https://t.me/azorceha" target="_blank" class="flex items-center py-2 px-4 text-sm border border-gray-200 text-gray-600 hover:border-gray-600">
+                <i class="material-icons text-lg mr-3">arrow_outward</i> Contact
+            </a>
+            <a href="https://whatsapp.com/channel/0029Vb6aaSyADTOLBm9HSl3h" target="_blank" class="flex items-center py-2 px-4 text-sm border border-gray-200 text-gray-600 hover:border-gray-600">
+                <i class="material-icons text-lg mr-3">arrow_outward</i> Channel
+            </a>
+        </div>
+    </nav>
+</div>
+</aside>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 opacity-0 invisible duration-300 ease-in-out z-[90]"></div>
+
+    <header class="glass sticky top-0 z-50 border-b border-gray-200">
+        <div class="max-w-2xl mx-auto px-8 py-4 flex items-center justify-between">
+            <div class="flex gap-4 items-center">
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-lg text-gray-800 font-semibold leading-none">ZoYanz API</h2>
+                    <p class="text-xs text-gray-500 leading-none">API Documentation</p>
+                </div>
+                <div class="px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold">
+                v1.0
             </div>
-            <div id="unread-count" class="notif-badge" style="display:none;"></div>
+            </div>
+            <button id="sidebarToggle" class="py-2 px-3 text-sm border border-gray-200 text-gray-500 hover:border-gray-600 flex items-center justify-center">
+                <i class="material-icons text-xl">menu</i>
+            </button>
         </div>
-        <div id="notifications-list"></div>
+    </header>
+
+    <main class="max-w-2xl mx-auto px-8 py-16">
+
+        <!-- Notifications Panel -->
+<div class="mb-8">
+    <div class="flex items-center justify-between mb-3">
+        <h2 class="text-lg font-semibold text-slate-900 flex items-center">
+            <span class="material-icons text-xl mr-2 text-slate-500">notifications</span>
+            Informasi
+        </h2>
+        <span id="unread-count" class="text-xs bg-slate-900 text-white px-2 py-1 hidden"></span>
+    </div>
+    <div id="notifications-list" class="space-y-2">
+    </div>
+</div>
+
+<div class="flex items-center justify-between mb-4">
+    <div class="flex-1 relative">
+        <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+            <span class="material-icons text-gray-400 text-lg">search</span>
+        </div>
+        <input type="text" id="searchInput" placeholder="Search API endpoints..." class="w-full pl-12 pr-5 py-4 text-sm border border-gray-200 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-gray-600">
+    </div>
+</div>
+
+<div id="content" class="space-y-4">
+    <div id="noResults" class="text-center py-16" style="display: none;">
+        <div class="max-w-md mx-auto">
+            <h3 class="text-xs text-slate-600 mb-2">No result found.</h3>
+        </div>
     </div>
 
-    <!-- Search -->
-    <div class="search-wrap">
-        <i class="material-icons search-icon">search</i>
-        <input type="text" id="searchInput" placeholder="Search endpoints, categories...">
+    <div id="apiList" class="space-y-3">
+        <!-- API list will be loaded here dynamically -->
     </div>
+</div>
 
-    <!-- API List -->
-    <div id="content">
-        <div id="noResults" style="display:none;">
-            <div>No endpoints found.</div>
-        </div>
-        <div id="apiList"></div>
-    </div>
-</main>
+<div class="flex flex-col mt-6 text-center">
+    <p class="text-slate-600 text-xs">© 2026 ZoYanz API. | All Rights Reserved.</p>
+</div>
 
 <script>
-    // ── Sidebar ──
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
+async function loadNotifications() {
+    try {
+        // Ambil file notifications.json di folder yang sama dengan HTML
+        const res = await fetch('notifications.json');
+        const notifications = await res.json();
+        const listEl = document.getElementById('notifications-list');
+        listEl.innerHTML = ''; // Clear loader
 
-    function openSidebar() {
-        sidebar.classList.add('open');
-        overlay.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeSidebar() {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('show');
-        document.body.style.overflow = '';
-    }
-
-    document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
-    document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
-    overlay.addEventListener('click', closeSidebar);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
-
-    // ── Copy ──
-    async function copyToClipboard(text, btn) {
-        if (!btn) return;
-        const orig = btn.innerHTML;
-        try {
-            await navigator.clipboard.writeText(text);
-            btn.textContent = 'Copied!';
-        } catch {
-            btn.textContent = 'Failed!';
+        if (!notifications.length) {
+            listEl.innerHTML = '<p class="text-xs text-slate-500">No notifications.</p>';
+            return;
         }
-        setTimeout(() => { btn.innerHTML = orig; }, 1500);
-    }
 
-    // ── Highlight ──
-    function hlJSON(el) {
-        if (window.hljs) hljs.highlightElement(el);
-    }
+        let unreadCount = 0;
 
-    // ── Toggles ──
-    function toggleCategory(index) {
-        const body = document.getElementById(`cat-body-${index}`);
-        const chevron = document.getElementById(`cat-chevron-${index}`);
-        const hidden = body.style.display === 'none' || !body.style.display;
-        body.style.display = hidden ? 'grid' : 'none';
-        if (hidden) {
-            chevron.classList.add('open');
+        notifications.forEach(notif => {
+            const notifEl = document.createElement('div');
+            notifEl.className = 'p-3 border border-gray-200 rounded text-sm text-slate-800 bg-gray-50';
+            notifEl.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span>${notif.message}</span>
+                    <span class="text-xs text-gray-400">${notif.date || ''}</span>
+                </div>
+            `;
+            if (!notif.read) unreadCount++;
+            listEl.appendChild(notifEl);
+        });
+
+        const unreadEl = document.getElementById('unread-count');
+        if (unreadCount > 0) {
+            unreadEl.textContent = unreadCount;
+            unreadEl.classList.remove('hidden');
         } else {
-            chevron.classList.remove('open');
+            unreadEl.classList.add('hidden');
         }
+
+    } catch(err) {
+        console.error('Failed to load notifications:', err);
+        document.getElementById('notifications-list').innerHTML =
+            '<p class="text-xs text-red-500">Gagal memuat notifikasi.</p>';
     }
+}
 
-    function toggleEndpoint(catIndex, epIndex) {
-        const body = document.getElementById(`ep-body-${catIndex}-${epIndex}`);
-        const chevron = document.getElementById(`ep-chevron-${catIndex}-${epIndex}`);
-        const hidden = body.style.display === 'none' || !body.style.display;
-        body.style.display = hidden ? 'block' : 'none';
-        if (hidden) chevron.classList.add('open');
-        else chevron.classList.remove('open');
-    }
+// Load on page ready
+document.addEventListener('DOMContentLoaded', loadNotifications);
+</script>
 
-    // ── Execute Request ──
-    async function executeRequest(event, catIndex, epIndex, method, path) {
-        event.preventDefault();
-        const form = document.getElementById(`form-${catIndex}-${epIndex}`);
-        const responseDiv = document.getElementById(`response-${catIndex}-${epIndex}`);
-        const responseContent = document.getElementById(`response-content-${catIndex}-${epIndex}`);
-        const clearButton = document.getElementById(`clear-${catIndex}-${epIndex}`);
+    <script>
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarClose = document.getElementById('sidebarClose');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
 
-        responseDiv.style.display = 'block';
+        function openSidebar() {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('opacity-0', 'invisible');
+            document.body.classList.add('overflow-hidden');
+        }
 
-        const formData = new FormData(form);
-        const fetchOptions = { method: method.toUpperCase() };
+        function closeSidebar() {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('opacity-0', 'invisible');
+            document.body.classList.remove('overflow-hidden');
+        }
 
-        let fullPath = path;
-        let curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${path}"`;
+        sidebarToggle.addEventListener('click', openSidebar);
+        sidebarClose.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
 
-        if (['POST','PUT','PATCH'].includes(fetchOptions.method)) {
-            const rawJson = formData.get('__raw_json__');
-            if (rawJson && rawJson.trim()) {
-                fetchOptions.body = rawJson;
-                fetchOptions.headers = { 'Content-Type': 'application/json' };
-                curlCommand += ` -H "Content-Type: application/json" -d '${rawJson}'`;
-            } else {
-                formData.delete('__raw_json__');
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+
+        async function copyToClipboard(text, buttonElement) {
+            if (!buttonElement) return;
+            const originalHTML = buttonElement.innerHTML;
+            try {
+                await navigator.clipboard.writeText(text);
+                buttonElement.textContent = 'Copied!';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalHTML;
+                }, 1500);
+            } catch (e) {
+                console.error('Copy failed', e);
+                buttonElement.textContent = 'Failed!';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalHTML;
+                }, 1500);
+            }
+        }
+
+        function hlJSON(el) {
+            if (window.hljs) {
+                hljs.highlightElement(el);
+            }
+        }
+
+        function toggleCategory(index) {
+            const category = document.getElementById(`category-${index}`);
+            const icon = document.getElementById(`category-icon-${index}`);
+            const isHidden = category.classList.toggle('hidden');
+            icon.textContent = isHidden ? 'expand_more' : 'expand_less';
+        }
+
+        function toggleEndpoint(catIndex, endpointIndex) {
+            const endpoint = document.getElementById(`endpoint-${catIndex}-${endpointIndex}`);
+            const icon = document.getElementById(`endpoint-icon-${catIndex}-${endpointIndex}`);
+            const isHidden = endpoint.classList.toggle('hidden');
+            icon.textContent = isHidden ? 'expand_more' : 'expand_less';
+        }
+
+        async function executeRequest(event, catIndex, endpointIndex, method, path) {
+            event.preventDefault();
+            const form = document.getElementById(`form-${catIndex}-${endpointIndex}`);
+            const responseDiv = document.getElementById(`response-${catIndex}-${endpointIndex}`);
+            const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
+            const clearButton = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
+
+            responseDiv.classList.remove('hidden');
+
+            const formData = new FormData(form);
+            const fetchOptions = {
+                method: method.toUpperCase()
+            };
+
+            let fullPath = path;
+            let curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${path}"`;
+
+            if (fetchOptions.method === 'POST' || fetchOptions.method === 'PUT' || fetchOptions.method === 'PATCH') {
                 fetchOptions.body = formData;
-                for (const [k, v] of formData.entries()) {
-                    if (v instanceof File && v.name) curlCommand += ` -F "${k}=@${v.name}"`;
-                    else if (typeof v === 'string') curlCommand += ` -F "${k}=${v}"`;
+                for (const [key, value] of formData.entries()) {
+                    if (value instanceof File && value.name) {
+                        curlCommand += ` -F "${key}=@${value.name}"`;
+                    } else if (typeof value === 'string') {
+                        curlCommand += ` -F "${key}=${value}"`;
+                    }
                 }
+            } else { // GET/DELETE
+                const params = new URLSearchParams();
+                for (const [key, value] of formData.entries()) {
+                    if (typeof value === 'string' && value) {
+                        params.append(key, value);
+                    }
+                }
+                const queryString = params.toString();
+                if (queryString) {
+                    fullPath += (path.includes('?') ? '&' : '?') + queryString;
+                }
+                curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${fullPath}"`;
             }
-        } else {
-            const params = new URLSearchParams();
-            for (const [k, v] of formData.entries()) {
-                if (typeof v === 'string' && v) params.append(k, v);
+
+            const escapedFullPath = fullPath.replace(/"/g, '&quot;').replace(/'/g, "'");
+            const escapedCurlCommand = curlCommand.replace(/"/g, '&quot;').replace(/'/g, "'");
+
+            responseContent.innerHTML = `
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="block-title">
+                            <span><span class="material-icons text-sm mr-2 align-middle">link</span>REQUEST URL</span>
+                            <button onclick="copyToClipboard('${window.location.origin}${escapedFullPath}', this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
+                        </h4>
+                        <pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${window.location.origin}${fullPath}</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="block-title">
+                            <span><span class="material-icons text-sm mr-2 align-middle">terminal</span>CURL COMMAND</span>
+                            <button onclick="copyToClipboard(this.parentElement.nextElementSibling.innerText, this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
+                        </h4>
+                        <pre class="bg-gray-900 text-white p-2 text-xs overflow-auto"><code>${curlCommand}</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="block-title">
+                             <span><span class="material-icons text-sm mr-2 align-middle">storage</span>SERVER RESPONSE</span>
+                             <button onclick="copyToClipboard(document.getElementById('response-body-${catIndex}-${endpointIndex}').innerText, this)" class="copy-btn"><span class="material-icons text-base align-middle">content_copy</span></button>
+                        </h4>
+                        <div id="response-body-${catIndex}-${endpointIndex}" class="bg-gray-900 text-white p-2 text-xs">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+              `;
+
+            const responseBodyDiv = document.getElementById(`response-body-${catIndex}-${endpointIndex}`);
+
+            try {
+                const response = await fetch(fullPath, fetchOptions);
+                const contentType = response.headers.get('content-type') || '';
+
+                let responseBodyContent = '';
+                if (!response.ok) {
+                    const errText = await response.text().catch(() => '');
+                    throw new Error(`${response.status} ${response.statusText}\n${errText}`);
+                }
+
+                if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    responseBodyContent = `<pre class="max-h-80 overflow-auto"><code class="language-json">${JSON.stringify(data, null, 2)}</code></pre>`;
+                    setTimeout(() => hlJSON(responseBodyDiv.querySelector('code')), 0);
+                } else if (contentType.startsWith('image/')) {
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    responseBodyContent = `<img src="${imageUrl}" class="max-w-full h-auto rounded-md">`;
+                } else {
+                    const text = await response.text();
+                    responseBodyContent = `<pre class="max-h-80 overflow-auto">${text}</pre>`;
+                }
+                responseBodyDiv.innerHTML = responseBodyContent;
+
+            } catch (err) {
+                let errMessage = String(err);
+                if (err.message && err.message.startsWith('404')) {
+                    errMessage = `Error 404: Not Found.\n\nEndpoint tidak ditemukan. Pastikan URL dan parameter sudah benar. Jika Anda yakin ini adalah kesalahan, silakan hubungi owner.`;
+                }
+                responseBodyDiv.innerHTML = `<pre class="text-red-400 max-h-80 overflow-auto">${errMessage}</pre>`;
             }
-            const qs = params.toString();
-            if (qs) fullPath += (path.includes('?') ? '&' : '?') + qs;
-            curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${fullPath}"`;
+            clearButton.classList.remove('hidden');
         }
 
-        const esc = s => s.replace(/"/g,'&quot;').replace(/'/g,"'");
+        function clearResponse(catIndex, endpointIndex) {
+            const responseDiv = document.getElementById(`response-${catIndex}-${endpointIndex}`);
+            const responseContent = document.getElementById(`response-content-${catIndex}-${endpointIndex}`);
+            const clearButton = document.getElementById(`clear-${catIndex}-${endpointIndex}`);
 
-        responseContent.innerHTML = `
-            <div class="response-block">
-                <div class="block-label">
-                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">link</i>Request URL</span>
-                    <button class="copy-btn" onclick="copyToClipboard('${window.location.origin}${esc(fullPath)}', this)">
-                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
-                    </button>
-                </div>
-                <pre><code>${window.location.origin}${fullPath}</code></pre>
-            </div>
-            <div class="response-block">
-                <div class="block-label">
-                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">terminal</i>cURL</span>
-                    <button class="copy-btn" onclick="copyToClipboard(this.parentElement.nextElementSibling.innerText, this)">
-                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
-                    </button>
-                </div>
-                <pre><code>${curlCommand}</code></pre>
-            </div>
-            <div class="response-block">
-                <div class="block-label">
-                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">storage</i>Response</span>
-                    <button class="copy-btn" onclick="copyToClipboard(document.getElementById('rb-${catIndex}-${epIndex}').innerText, this)">
-                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
-                    </button>
-                </div>
-                <div id="rb-${catIndex}-${epIndex}"><div class="spinner"></div></div>
-            </div>`;
+            responseDiv.classList.add('fade-out');
+            clearButton.classList.add('hidden');
 
-        const rb = document.getElementById(`rb-${catIndex}-${epIndex}`);
-        try {
-            const res = await fetch(fullPath, fetchOptions);
-            const ct = res.headers.get('content-type') || '';
-            if (!res.ok) {
-                const err = await res.text().catch(() => '');
-                throw new Error(`${res.status} ${res.statusText}\n${err}`);
-            }
-            if (ct.includes('application/json')) {
-                const data = await res.json();
-                rb.innerHTML = `<pre><code class="language-json">${JSON.stringify(data, null, 2)}</code></pre>`;
-                setTimeout(() => hlJSON(rb.querySelector('code')), 0);
-            } else if (ct.startsWith('image/')) {
-                const blob = await res.blob();
-                rb.innerHTML = `<img src="${URL.createObjectURL(blob)}" style="max-width:100%;height:auto;">`;
-            } else {
-                const text = await res.text();
-                rb.innerHTML = `<pre><code>${text}</code></pre>`;
-            }
-        } catch(err) {
-            rb.innerHTML = `<pre class="err">${String(err)}</pre>`;
+            setTimeout(() => {
+                responseContent.innerHTML = '';
+                responseDiv.classList.add('hidden');
+                responseDiv.classList.remove('fade-out');
+            }, 200);
         }
-        clearButton.style.display = 'inline-block';
-    }
 
-    // ── Clear Response ──
-    function clearResponse(catIndex, epIndex) {
-        const responseDiv = document.getElementById(`response-${catIndex}-${epIndex}`);
-        const clearButton = document.getElementById(`clear-${catIndex}-${epIndex}`);
-        responseDiv.style.display = 'none';
-        document.getElementById(`response-content-${catIndex}-${epIndex}`).innerHTML = '';
-        clearButton.style.display = 'none';
-    }
+        // Function to load and render APIs from OpenAPI spec
+        async function loadApis() {
+            const apiList = document.getElementById('apiList');
+            try {
+                const response = await fetch('/src/openapi.json');
+                const data = await response.json();
 
-    // ── Load Notifications ──
-    async function loadNotifications() {
-        const list = document.getElementById('notifications-list');
-        const badge = document.getElementById('unread-count');
-        try {
-            const res = await fetch(`/src/notifications.json?t=${Date.now()}`);
-            let notifs = await res.json();
-            if (!Array.isArray(notifs)) notifs = notifs ? [notifs] : [];
-            notifs.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
-            let unread = 0;
-            list.innerHTML = '';
-            notifs.forEach((n, i) => {
-                if (!n.read) unread++;
-                const el = document.createElement('div');
-                el.className = `notif-card will-fade-in fade-in ${n.read ? 'read' : ''}`;
-                el.style.animationDelay = `${i*40}ms`;
-                el.innerHTML = `
-                    <div class="notif-top">
-                        <div>
-                            <div class="notif-name">${n.title||'Notifikasi'}</div>
-                            <div class="notif-msg">${n.message||''}</div>
-                        </div>
-                        <div class="notif-meta">
-                            ${!n.read ? '<div class="unread-dot"></div>' : ''}
-                            <div class="notif-date">${n.date ? new Date(n.date).toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : ''}</div>
-                        </div>
-                    </div>`;
-                list.appendChild(el);
-            });
-            if (unread > 0) { badge.textContent = unread; badge.style.display = 'block'; }
-            if (notifs.length === 0) list.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:1rem 0;">Tidak ada notifikasi.</div>';
-        } catch { list.innerHTML = '<div style="font-size:11px;color:var(--red);">Gagal memuat notifikasi.</div>'; }
-    }
+                // Group endpoints by tags
+                const categories = {};
+                if (data.tags) {
+                    data.tags.forEach(tag => {
+                        categories[tag.name] = {
+                            name: tag.name,
+                            items: []
+                        };
+                    });
+                }
 
-    // ── Load APIs ──
-    async function loadApis() {
-        const apiList = document.getElementById('apiList');
-        try {
-            const res = await fetch('/src/openapi.json');
-            const data = await res.json();
+                Object.keys(data.paths).forEach(path => {
+                    const pathItem = data.paths[path];
+                    Object.keys(pathItem).forEach(method => {
+                        const endpoint = pathItem[method];
+                        const tagName = endpoint.tags && endpoint.tags.length > 0 ? endpoint.tags[0] : 'Uncategorized';
 
-            const categories = {};
-            if (data.tags) {
-                data.tags.forEach(tag => { categories[tag.name] = { name: tag.name, items: [] }; });
-            }
-            Object.keys(data.paths).forEach(path => {
-                const pathItem = data.paths[path];
-                Object.keys(pathItem).forEach(method => {
-                    const ep = pathItem[method];
-                    const tag = ep.tags && ep.tags.length ? ep.tags[0] : 'Uncategorized';
-                    if (!categories[tag]) categories[tag] = { name: tag, items: [] };
-                    categories[tag].items.push({
-                        path, method: method.toUpperCase(),
-                        name: ep.summary || 'No summary',
-                        desc: ep.description || 'No description',
-                        status: ep.deprecated ? 'deprecated' : 'ready',
-                        parameters: ep.parameters,
-                        requestBody: ep.requestBody
+                        if (!categories[tagName]) {
+                            categories[tagName] = {
+                                name: tagName,
+                                items: []
+                            };
+                        }
+
+                        categories[tagName].items.push({
+                            path: path,
+                            method: method.toUpperCase(),
+                            name: endpoint.summary || 'No summary',
+                            desc: endpoint.description || 'No description',
+                            status: endpoint.deprecated ? 'deprecated' : 'ready',
+                            parameters: endpoint.parameters,
+                            requestBody: endpoint.requestBody
+                        });
                     });
                 });
-            });
 
-            let html = '';
-            Object.values(categories).forEach((cat, catIndex) => {
-                if (!cat.items.length) return;
-                html += `
-                <div class="category-group will-fade-in fade-in" style="animation-delay:${catIndex*60}ms;" data-category="${cat.name}">
-                    <button class="cat-header" onclick="toggleCategory(${catIndex})">
-                        <div class="cat-left">
-                            <div class="cat-icon"><i class="material-icons" style="font-size:12px;">folder</i></div>
-                            <span class="cat-name">${cat.name}</span>
-                            <span class="cat-count">(${cat.items.length})</span>
-                        </div>
-                        <i class="material-icons cat-chevron" id="cat-chevron-${catIndex}">expand_more</i>
-                    </button>
-                    <div class="cat-body" id="cat-body-${catIndex}" style="display:none;">`;
-
-                cat.items.forEach((item, epIndex) => {
-                    const methodCls = `method-${item.method}`;
-                    const statusCls = item.status === 'deprecated' ? 'status-deprecated' : 'status-ready';
-
-                    let formHtml = '';
-                    if (item.parameters) {
-                        item.parameters.forEach(p => {
-                            const s = p.schema || {};
-                            const req = !!p.required;
-                            const label = `${p.name}${req ? ' <span class="req">*</span>' : ''}`;
-                            const desc = p.description ? `<div class="field-hint">${p.description}</div>` : '';
-                            const ph = (s.example ?? s.default ?? '') + '';
-
-                            if (Array.isArray(s.enum) && s.enum.length) {
-                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${p.name}" ${req?'required':''}>${s.enum.map(v=>`<option value="${v}">${v}</option>`).join('')}</select>${desc}</div>`;
-                            } else if (s.type === 'boolean') {
-                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${p.name}" ${req?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
-                            } else {
-                                const t = (s.type === 'number' || s.type === 'integer') ? 'number' : 'text';
-                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="${t}" name="${p.name}" placeholder="${ph.replace(/"/g,'&quot;')}" ${req?'required':''}>${desc}</div>`;
-                            }
-                        });
-                    }
-
-                    if (item.requestBody && item.requestBody.content) {
-                        const content = item.requestBody.content;
-                        if (content['multipart/form-data']) {
-                            const schema = content['multipart/form-data'].schema || { properties: {} };
-                            const reqd = schema.required || [];
-                            Object.keys(schema.properties || {}).forEach(propName => {
-                                const prop = schema.properties[propName] || {};
-                                const req = reqd.includes(propName);
-                                const label = `${propName}${req?' <span class="req">*</span>':''}`;
-                                const desc = prop.description ? `<div class="field-hint">${prop.description}</div>` : '';
-                                const ph = (prop.example ?? prop.default ?? '') + '';
-                                const isFile = prop.format === 'binary';
-                                if (isFile) {
-                                    let accept = '';
-                                    if (propName.toLowerCase().includes('image')) accept = 'accept="image/*"';
-                                    else if (propName.toLowerCase().includes('video')) accept = 'accept="video/*"';
-                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="file" name="${propName}" ${accept} ${req?'required':''}>${desc}</div>`;
-                                } else if (Array.isArray(prop.enum) && prop.enum.length) {
-                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${propName}" ${req?'required':''}>${prop.enum.map(v=>`<option value="${v}">${v}</option>`).join('')}</select>${desc}</div>`;
-                                } else if (prop.type === 'boolean') {
-                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${propName}" ${req?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
-                                } else {
-                                    const t = (prop.type === 'number' || prop.type === 'integer') ? 'number' : 'text';
-                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="${t}" name="${propName}" placeholder="${ph.replace(/"/g,'&quot;')}" ${req?'required':''}>${desc}</div>`;
-                                }
-                            });
-                        }
-                        if (content['application/json']) {
-                            formHtml += `<div class="field-wrap"><label class="field-label">Body (application/json)</label><textarea name="__raw_json__" placeholder='{"key":"value"}'></textarea><div class="field-hint">JSON valid. Jika diisi, body lain diabaikan.</div></div>`;
-                        }
-                    }
-
-                    const tryItOut = item.status !== 'deprecated' ? `
-                        <div style="margin-bottom:1rem;">
-                            <div class="block-label"><span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">play_arrow</i>Try It Out</span></div>
-                            <form id="form-${catIndex}-${epIndex}" onsubmit="executeRequest(event,${catIndex},${epIndex},'${item.method}','${item.path}')">
-                                <div class="form-fields">${formHtml}</div>
-                                <button type="submit" class="btn-execute">Execute</button>
-                                <button type="button" id="clear-${catIndex}-${epIndex}" class="btn-clear" style="display:none;" onclick="clearResponse(${catIndex},${epIndex})">Clear</button>
-                            </form>
-                        </div>
-                        <div id="response-${catIndex}-${epIndex}" class="response-section" style="display:none;">
-                            <div id="response-content-${catIndex}-${epIndex}"></div>
-                        </div>` :
-                        `<div class="deprecated-warn"><i class="material-icons" style="font-size:12px;vertical-align:middle;margin-right:4px;">warning</i>Endpoint ini tidak digunakan lagi.</div>`;
+                let html = '';
+                Object.values(categories).forEach((category, catIndex) => {
+                    if (category.items.length === 0) return;
 
                     html += `
-                    <div class="api-item" id="${item.path.split('/').pop()}"
-                         data-method="${item.method}" data-path="${item.path}"
-                         data-alias="${item.name}" data-description="${item.desc}"
-                         data-category="${cat.name}">
-                        <button class="ep-header" onclick="toggleEndpoint(${catIndex},${epIndex})">
-                            <div class="ep-left">
-                                <span class="method-badge ${methodCls}">${item.method}</span>
-                                <div class="ep-info">
-                                    <div class="ep-path">${item.path}</div>
-                                    <div class="ep-meta">
-                                        <span class="ep-name">${item.name}</span>
-                                        <span class="status-pill ${statusCls}">${item.status}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <i class="material-icons ep-chevron" id="ep-chevron-${catIndex}-${epIndex}">expand_more</i>
-                        </button>
-                        <div class="ep-body" id="ep-body-${catIndex}-${epIndex}" style="display:none;">
-                            <div class="ep-desc">${item.desc}</div>
-                            ${tryItOut}
-                            <div style="margin-top:1rem;">
-                                <div class="block-label"><span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">list</i>HTTP Status Codes</span></div>
-                                <table class="status-table">
-                                    <thead><tr><th>Code</th><th>Description</th></tr></thead>
-                                    <tbody>
-                                        <tr><td><span class="sc sc-2">200</span></td><td>OK — Request berhasil</td></tr>
-                                        <tr><td><span class="sc sc-4">400</span></td><td>Bad Request — Parameter tidak valid</td></tr>
-                                        <tr><td><span class="sc sc-4">401</span></td><td>Unauthorized — API key tidak valid</td></tr>
-                                        <tr><td><span class="sc sc-4">403</span></td><td>Forbidden — Tidak ada akses</td></tr>
-                                        <tr><td><span class="sc sc-4">404</span></td><td>Not Found — Endpoint tidak ditemukan</td></tr>
-                                        <tr><td><span class="sc sc-429">429</span></td><td>Too Many Requests — Rate limit tercapai</td></tr>
-                                        <tr><td><span class="sc sc-5">500</span></td><td>Internal Server Error — Kesalahan server</td></tr>
-                                        <tr><td><span class="sc sc-5">503</span></td><td>Service Unavailable — Server tidak tersedia</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>`;
-                });
+                    <div class="category-group" data-category="${category.name}">
+                        <div class="mb-2">
+                            <div class="bg-white border border-gray-200 hover:border-gray-600 transition-colors duration-150">
+                                <button onclick="toggleCategory(${catIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150">
+                                    <h2 class="font-bold flex items-center text-slate-800">
+                                        <span class="material-icons text-xl mr-4 text-white bg-slate-900 py-1 px-2">folder</span>
+                                        <span class="truncate max-w-xs text-sm text-slate-900">${category.name}</span>
+                                        <span class="ml-2 text-xs text-gray-600">(${category.items.length})</span>
+                                    </h2>
+                                    <span class="material-icons transition-transform duration-150" id="category-icon-${catIndex}">expand_more</span>
+                                </button>
+                                
+                                <div id="category-${catIndex}" class="hidden">`;
 
-                html += `</div></div>`;
+                    category.items.forEach((item, endpointIndex) => {
+                        const method = item.method;
+                        const path = item.path;
+
+                        const statusClasses = {
+                            'ready': 'bg-green-200 text-green',
+                            'deprecated': 'bg-yellow-500/20 text-yellow-400',
+                        };
+                        const statusClass = statusClasses[item.status] || 'bg-gray-600';
+
+                        const methodClasses = {
+                            'GET': 'bg-slate-900',
+                            'POST': 'bg-slate-900',
+                            'PUT': 'bg-yellow-600',
+                            'DELETE': 'bg-red-600'
+                        };
+                        const methodClass = methodClasses[method] || 'bg-gray-600';
+
+                        html += `
+                                    <div id="${item.path.split('/').pop()}" class="border-t border-gray-200 api-item" 
+                                         data-method="${method}"
+                                         data-path="${path}"
+                                         data-alias="${item.name}"
+                                         data-description="${item.desc}"
+                                         data-category="${category.name}">
+                                        <button onclick="toggleEndpoint(${catIndex}, ${endpointIndex})" class="w-full px-4 py-3 text-left flex items-center justify-between transition-colors duration-150">
+                                            <div class="flex items-center min-w-0 flex-1">
+                                                <span class="inline-block px-3 py-1 text-xs font-semibold text-white mr-3 flex-shrink-0 ${methodClass}">
+                                                    ${method}
+                                                </span>
+                                                <div class="flex flex-col min-w-0 flex-1">
+                                                    <span class="font-semibold truncate max-w-[90%] font-mono text-sm text-slate-800" title="${path}">${path}</span>
+                                                    <div class="flex items-center">
+                                                        <span class="text-xs text-slate-600 truncate max-w-[90%]" title="${item.name}">${item.name}</span>
+                                                        <span class="ml-2 px-2 py-0.5 text-xs rounded ${statusClass}">${item.status}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span class="material-icons transition-transform duration-150 flex-shrink-0" id="endpoint-icon-${catIndex}-${endpointIndex}">expand_more</span>
+                                        </button>
+                                        
+                                        <div id="endpoint-${catIndex}-${endpointIndex}" class="hidden bg-gray-50 p-4 border-t border-gray-200 space-y-4">
+                                            <div class="mb-3">
+                                                <div class="text-slate-600 text-xs">${item.desc}</div>
+                                            </div>
+                                            `;
+                        if (item.status !== 'deprecated') {
+                            html += `
+                                                <div>
+                                                    <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
+                                                        <span class="material-icons text-sm mr-1">play_arrow</span>
+                                                        TRY IT OUT
+                                                    </div>
+                                                    <div>
+                                                        <form id="form-${catIndex}-${endpointIndex}" onsubmit="executeRequest(event, ${catIndex}, ${endpointIndex}, '${method}', '${path}')">
+                                                            <div class="mb-4 space-y-2">`;
+                            // Query parameters
+                            if (item.parameters) {
+                                item.parameters.forEach(param => {
+                                    const schema = param.schema || {};
+                                    const isReq = !!param.required;
+                                    const label = `${param.name} ${isReq ? '<span class="text-red-500">*</span>' : ''}`;
+                                    const desc = param.description ? `<div class="text-[10px] text-gray-500 mt-1">${param.description}</div>` : '';
+                                    const placeholder = (schema.example ?? schema.default ?? '') + '';
+
+                                    // enum => select
+                                    if (Array.isArray(schema.enum) && schema.enum.length) {
+                                        html += `
+                                            <div>
+                                              <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                              <select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq ? 'required' : ''}>
+                                                ${schema.enum.map(v => `<option value="${String(v)}">${String(v)}</option>`).join('')}
+                                              </select>
+                                              ${desc}
+                                            </div>`;
+                                    } else {
+                                        // type-aware inputs
+                                        let type = 'text';
+                                        if (schema.type === 'number' || schema.type === 'integer') type = 'number';
+                                        if (schema.type === 'boolean') {
+                                            html += `
+                                              <div>
+                                                <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                <select name="${param.name}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isReq ? 'required' : ''}>
+                                                  <option value="true">true</option>
+                                                  <option value="false">false</option>
+                                                </select>
+                                                ${desc}
+                                              </div>`;
+                                        } else {
+                                            html += `
+                                              <div>
+                                                <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                <input type="${type}" name="${param.name}"
+                                                  class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400"
+                                                  placeholder="${placeholder.replace(/"/g,'&quot;')}" ${isReq ? 'required' : ''}>
+                                                ${desc}
+                                              </div>`;
+                                        }
+                                    }
+                                });
+                            }
+
+                            // Request body
+                            if (item.requestBody && item.requestBody.content) {
+                                const content = item.requestBody.content;
+
+                                // multipart/form-data
+                                if (content['multipart/form-data']) {
+                                    const schema = content['multipart/form-data'].schema || {
+                                        properties: {}
+                                    };
+                                    const required = schema.required || [];
+                                    Object.keys(schema.properties || {}).forEach(propName => {
+                                        const prop = schema.properties[propName] || {};
+                                        const isRequired = required.includes(propName);
+                                        const label = `${propName} ${isRequired ? '<span class="text-red-500">*</span>' : ''}`;
+                                        const desc = prop.description ? `<div class="text-[10px] text-slate-500 mt-1">${prop.description}</div>` : '';
+                                        const placeholder = (prop.example ?? prop.default ?? '') + '';
+                                        const isFile = prop.format === 'binary';
+
+                                        if (isFile) {
+                                            let accept = '';
+                                            const propDesc = (prop.description || '').toLowerCase();
+                                            if (propName.toLowerCase().includes('image') || propDesc.includes('gambar')) {
+                                                accept = 'accept="image/*"';
+                                            } else if (propName.toLowerCase().includes('video') || propDesc.includes('vidio')) {
+                                                accept = 'accept="video/*"';
+                                            }
+                                            html += `
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                    <input type="file" name="${propName}" ${accept}
+                                                        class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white"
+                                                        ${isRequired ? 'required' : ''}>
+                                                    ${desc}
+                                                </div>`;
+                                        } else if (Array.isArray(prop.enum) && prop.enum.length) {
+                                            html += `
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                    <select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired ? 'required' : ''}>
+                                                        ${prop.enum.map(v => `<option value="${String(v)}">${String(v)}</option>`).join('')}
+                                                    </select>
+                                                    ${desc}
+                                                </div>`;
+                                        } else if (prop.type === 'boolean') {
+                                            html += `
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                    <select name="${propName}" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white" ${isRequired ? 'required' : ''}>
+                                                        <option value="true">true</option>
+                                                        <option value="false">false</option>
+                                                    </select>
+                                                    ${desc}
+                                                </div>`;
+                                        } else {
+                                            let inputType = 'text';
+                                            if (prop.type === 'number' || prop.type === 'integer') {
+                                                inputType = 'number';
+                                            }
+                                            html += `
+                                                <div>
+                                                    <label class="block text-xs font-medium text-slate-700 mb-2">${label}</label>
+                                                    <input type="${inputType}" name="${propName}"
+                                                        class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white placeholder:text-slate-400"
+                                                        placeholder="${placeholder.replace(/"/g, '&quot;')}" ${isRequired ? 'required' : ''}>
+                                                    ${desc}
+                                                </div>`;
+                                        }
+                                    });
+                                }
+
+                                // RAW JSON
+                                if (content['application/json']) {
+                                    html += `
+                                          <div>
+                                            <label class="block text-xs font-medium text-slate-700 mb-2">Body (application/json)</label>
+                                            <textarea name="__raw_json__" rows="6" class="w-full px-3 py-2 border border-gray-200 text-sm focus:outline-none focus:border-gray-600 bg-white font-mono placeholder:text-slate-400" placeholder='{"key":"value"}'></textarea>
+                                            <div class="text-[10px] text-slate-500 mt-1">Masukkan JSON valid. Jika diisi, body lain akan diabaikan.</div>
+                                          </div>`;
+                                }
+                            }
+
+                            html += `
+                                                            </div>
+                                                            <button type="submit" class="bg-gray-800 hover:bg-gray-700 font-semibold text-white px-6 py-2 text-xs font-medium transition-colors duration-150">
+                                                                Execute
+                                                            </button>
+                                                            <button type="button" id="clear-${catIndex}-${endpointIndex}" onclick="clearResponse(${catIndex}, ${endpointIndex})" class="hidden bg-white border border-gray-200 hover:border-gray-600 font-semibold text-slate-900 px-6 py-2 text-xs font-medium transition-colors duration-150 ml-2">
+                                                                Clear
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>`;
+                        } else {
+                            html += `<div class="text-yellow-400 text-xs p-3 bg-yellow-500/20 border border-yellow-500/30">Endpoint ini tidak digunakan lagi.</div>`;
+                        }
+
+                        html += `
+                                            <div id="response-${catIndex}-${endpointIndex}" class="hidden mt-4">
+                                                <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
+                                                    <span class="material-icons text-sm mr-1">code</span>
+                                                    RESPONSE
+                                                </div>
+                                                <div id="response-content-${catIndex}-${endpointIndex}" class="bg-gray-50 text-xs p-4 border border-gray-200">
+                                                    <!-- Response will be rendered here by executeRequest -->
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-4">
+                                                <div class="text-gray-700 font-bold text-xs mb-2 flex items-center">
+                                                    <span class="material-icons text-sm mr-1">list</span>
+                                                    HTTP STATUS CODES
+                                                </div>
+                                                <div class="bg-white border border-gray-200">
+                                                    <div class="overflow-x-auto">
+                                                        <table class="w-full text-xs">
+                                                            <thead class="bg-gray-50 border-b border-gray-200">
+                                                                <tr>
+                                                                    <th class="px-4 py-2 text-left font-semibold text-slate-700">Code</th>
+                                                                    <th class="px-4 py-2 text-left font-semibold text-slate-700">Description</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y divide-gray-200">
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-green-600 text-sm mr-2">check_circle</span>
+                                                                            <span class="font-mono font-semibold text-green-600">200</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">OK - Request successful</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">400</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Bad Request - Invalid parameters or missing required fields</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">401</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Unauthorized - Missing or invalid API key</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">403</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Forbidden - You do not have permission to access this resource</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">404</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Not Found - The requested resource could not be found</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">405</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Method Not Allowed - HTTP method not supported for this resource</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-orange-500 text-sm mr-2">warning</span>
+                                                                            <span class="font-mono font-semibold text-orange-500">429</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Too Many Requests - You have hit the rate limit</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">500</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Internal Server Error - Something went wrong on our end</td>
+                                                                </tr>
+                                                                <tr class="hover:bg-gray-50">
+                                                                    <td class="px-4 py-2">
+                                                                        <div class="flex items-center">
+                                                                            <span class="material-icons text-red-600 text-sm mr-2">error</span>
+                                                                            <span class="font-mono font-semibold text-red-600">503</span>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="px-4 py-2 text-slate-600">Service Unavailable - The server is temporarily unavailable</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>`;
+                    });
+                    html += `</div></div></div>`;
+                });
+                apiList.innerHTML = html;
+                const categoriess = apiList.querySelectorAll('.category-group');
+                categoriess.forEach((category, index) => {
+                    category.classList.add('will-fade-in', 'fade-in');
+                    category.style.animationDelay = `${index * 70}ms`;
+                });
+            } catch (error) {
+                apiList.innerHTML = '<p class="text-red-500">Failed to load API data.</p>';
+                console.error('Error loading API data:', error);
+            }
+        }
+
+        // Function to load and render notifications
+        async function loadNotifications() {
+    const notificationsList = document.getElementById('notifications-list');
+    const unreadCountBadge = document.getElementById('unread-count');
+
+    try {
+        // Tambahkan cache-busting untuk selalu ambil versi terbaru
+        const response = await fetch(`/src/notifications.json?t=${Date.now()}`);
+        let notifications = await response.json();
+
+        // Pastikan notifications selalu array
+        if (!Array.isArray(notifications)) {
+            notifications = notifications ? [notifications] : [];
+        }
+
+        notificationsList.innerHTML = ''; // Clear loader
+        let unreadCount = 0;
+
+        // Sort notifications by date, newest first
+        notifications.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+
+        notifications.forEach((notif, index) => {
+            if (!notif.read) unreadCount++;
+
+            const notifElement = document.createElement('div');
+            notifElement.className = `bg-white border border-gray-200 p-4 text-xs will-fade-in fade-in ${notif.read ? 'opacity-60' : ''}`;
+            notifElement.style.animationDelay = `${index * 50}ms`;
+            notifElement.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <p class="font-bold text-slate-800 mb-1">${notif.title || 'Tanpa Judul'}</p>
+                        <p class="text-slate-600">${notif.message || '-'}</p>
+                    </div>
+                    <div class="flex items-center ml-4 flex-shrink-0">
+                        ${!notif.read ? '<div class="w-2 h-2 bg-green-400 rounded-full mr-2" title="Unread"></div>' : ''}
+                        <span class="text-slate-500">${notif.date ? new Date(notif.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</span>
+                    </div>
+                </div>
+            `;
+            notificationsList.appendChild(notifElement);
+        });
+
+        // Update unread badge
+        if (unreadCount > 0) {
+            unreadCountBadge.textContent = unreadCount;
+            unreadCountBadge.classList.remove('hidden');
+        } else {
+            unreadCountBadge.classList.add('hidden');
+        }
+
+        // Jika tidak ada notifikasi
+        if (notifications.length === 0) {
+            notificationsList.innerHTML = '<p class="text-center text-slate-500 text-xs py-4">Tidak ada notifikasi</p>';
+        }
+
+    } catch (error) {
+        console.error('Gagal memuat notifikasi:', error);
+        notificationsList.innerHTML = '<p class="text-center text-red-500 text-xs py-4">Gagal memuat notifikasi</p>';
+        unreadCountBadge.classList.add('hidden');
+    }
+}
+
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const apiItems = document.querySelectorAll('.api-item');
+            const categories = document.querySelectorAll('.category-group');
+            const noResults = document.getElementById('noResults');
+            let visibleCount = 0;
+
+            apiItems.forEach(item => {
+                const path = item.dataset.path.toLowerCase();
+                const alias = item.dataset.alias.toLowerCase();
+                const description = item.dataset.description.toLowerCase();
+
+                if (path.includes(searchTerm) || alias.includes(searchTerm) || description.includes(searchTerm)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
             });
 
-            apiList.innerHTML = html;
-        } catch(err) {
-            apiList.innerHTML = `<div style="color:var(--red);font-size:11px;">Gagal memuat API data.</div>`;
-            console.error(err);
-        }
-    }
+            categories.forEach(category => {
+                const visibleItems = category.querySelectorAll('.api-item[style=""]');
+                if (visibleItems.length > 0) {
+                    category.style.display = '';
+                } else {
+                    category.style.display = 'none';
+                }
+            });
 
-    // ── Search ──
-    document.getElementById('searchInput').addEventListener('input', function() {
-        const q = this.value.toLowerCase();
-        const items = document.querySelectorAll('.api-item');
-        const cats = document.querySelectorAll('.category-group');
-        const noRes = document.getElementById('noResults');
-        let visible = 0;
-
-        items.forEach(item => {
-            const match = item.dataset.path.toLowerCase().includes(q) ||
-                          item.dataset.alias.toLowerCase().includes(q) ||
-                          item.dataset.description.toLowerCase().includes(q);
-            item.style.display = match ? '' : 'none';
-            if (match) visible++;
+            if (visibleCount === 0) {
+                noResults.style.display = 'block';
+            } else {
+                noResults.style.display = 'none';
+            }
         });
 
-        cats.forEach(cat => {
-            const hasVisible = [...cat.querySelectorAll('.api-item')].some(i => i.style.display !== 'none');
-            cat.style.display = hasVisible ? '' : 'none';
+
+        // Initial load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadApis();
+            loadNotifications();
         });
-
-        noRes.style.display = visible === 0 ? 'block' : 'none';
-    });
-
-    // ── Init ──
-    document.addEventListener('DOMContentLoaded', () => {
-        loadApis();
-        loadNotifications();
-    });
-</script>
+    </script>
 </body>
+
 </html>
