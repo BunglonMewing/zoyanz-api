@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ZoYanz API Documentation — Browse and test all endpoints.">
+    <meta name="theme-color" content="#080c10">
+    <title>ZoYanz APIs — Docs</title>
+    <link rel="icon" href="/src/icon.png" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/json.min.js"></script>
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #080c10;
+            --surface: #0d1117;
+            --surface2: #111820;
+            --surface3: #0a1520;
+            --border: rgba(0,255,200,0.08);
+            --border-h: rgba(0,255,200,0.25);
+            --accent: #00ffc8;
+            --accent2: #00b8ff;
+            --text: #e2f0ff;
+            --muted: #4a6070;
+            --muted2: #7a9aaa;
+            --green: #00ffc8;
+            --yellow: #ffc843;
+            --red: #ff4d6d;
+            --blue: #00b8ff;
+        }
+
+        ::-webkit-scrollbar { width: 3px; height: 3px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border-h); }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            min-height: 100vh;
+        }
+
+        body::after {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(rgba(0,255,200,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,255,200,0.025) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none; z-index: 0;
+        }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            position: fixed; top: 0; right: 0;
+            height: 100%; width: 280px;
+            background: var(--surface);
+            border-left: 1px solid var(--border-h);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+        #sidebar.open { transform: translateX(0); }
+        .sidebar-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .sidebar-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800; font-size: 14px; color: var(--text);
+        }
+        .sidebar-logo span { color: var(--accent); }
+        .sidebar-close {
+            background: none; border: 1px solid var(--border);
+            color: var(--muted2); cursor: pointer;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .sidebar-close:hover { border-color: var(--border-h); color: var(--text); }
+        .sidebar-body { padding: 1.5rem; }
+        .sidebar-nav-label {
+            font-size: 9px; color: var(--muted); letter-spacing: 3px;
+            text-transform: uppercase; margin-bottom: 0.75rem; margin-top: 1.25rem;
+        }
+        .sidebar-nav-label:first-child { margin-top: 0; }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0.75rem;
+            color: var(--muted2); font-size: 12px;
+            text-decoration: none; border: 1px solid transparent;
+            transition: all 0.15s;
+        }
+        .sidebar-link:hover {
+            color: var(--text); border-color: var(--border);
+            background: var(--surface2);
+        }
+        .sidebar-link i { font-size: 14px; color: var(--accent); }
+
+        /* ── Overlay ── */
+        #overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            opacity: 0; visibility: hidden;
+            transition: all 0.3s; z-index: 90;
+        }
+        #overlay.show { opacity: 1; visibility: visible; }
+
+        /* ── Header ── */
+        header {
+            position: sticky; top: 0; z-index: 50;
+            border-bottom: 1px solid var(--border);
+            background: rgba(8,12,16,0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .header-inner {
+            max-width: 760px; margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .logo-wrap { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-mark {
+            width: 26px; height: 26px;
+            border: 1.5px solid var(--accent);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .logo-mark i { font-size: 11px; color: var(--accent); }
+        .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; }
+        .logo-text span { color: var(--accent); }
+        .badge {
+            font-size: 9px; border: 1px solid var(--border-h);
+            color: var(--accent); padding: 2px 6px; letter-spacing: 1px;
+        }
+        .header-right { display: flex; align-items: center; gap: 0.75rem; }
+        .menu-btn {
+            background: none; border: 1px solid var(--border);
+            color: var(--muted2); cursor: pointer;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .menu-btn:hover { border-color: var(--border-h); color: var(--text); }
+
+        /* ── Main ── */
+        main {
+            position: relative; z-index: 1;
+            max-width: 760px; margin: 0 auto;
+            padding: 2.5rem 2rem 4rem;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 600px) {
+            main { padding: 1.5rem 1rem 3rem; }
+            .header-inner { padding: 0.875rem 1rem; }
+        }
+
+        /* ── Notifications ── */
+        .notif-section { margin-bottom: 2rem; }
+        .notif-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+        .notif-title {
+            font-size: 9px; color: var(--muted);
+            letter-spacing: 3px; text-transform: uppercase;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .notif-title i { font-size: 12px; color: var(--accent); }
+        .notif-badge {
+            background: var(--accent); color: var(--bg);
+            font-size: 9px; font-weight: 700;
+            padding: 2px 6px; letter-spacing: 0.5px;
+        }
+        .notif-card {
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 0.875rem 1rem; margin-bottom: 4px;
+            font-size: 11px;
+            transition: border-color 0.2s;
+        }
+        .notif-card:hover { border-color: var(--border-h); }
+        .notif-card.read { opacity: 0.5; }
+        .notif-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+        .notif-name { font-weight: 700; color: var(--text); margin-bottom: 3px; }
+        .notif-msg { color: var(--muted2); line-height: 1.5; }
+        .notif-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .unread-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .notif-date { color: var(--muted); font-size: 10px; }
+
+        /* ── Search ── */
+        .search-wrap { margin-bottom: 1.5rem; position: relative; }
+        .search-icon {
+            position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 14px; pointer-events: none;
+        }
+        #searchInput {
+            width: 100%; background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text); font-family: 'Space Mono', monospace;
+            font-size: 12px; padding: 0.75rem 1rem 0.75rem 2.5rem;
+            outline: none; transition: border-color 0.2s;
+        }
+        #searchInput::placeholder { color: var(--muted); }
+        #searchInput:focus { border-color: var(--border-h); }
+
+        /* ── API List ── */
+        #apiList { display: grid; gap: 4px; }
+        .category-group {}
+        .cat-header {
+            background: var(--surface); border: 1px solid var(--border);
+            width: 100%; text-align: left; cursor: pointer;
+            padding: 0.875rem 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: border-color 0.2s, background 0.2s;
+            color: var(--text);
+        }
+        .cat-header:hover { border-color: var(--border-h); background: var(--surface2); }
+        .cat-left { display: flex; align-items: center; gap: 0.75rem; }
+        .cat-icon {
+            width: 28px; height: 28px; background: rgba(0,255,200,0.08);
+            border: 1px solid var(--border-h);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cat-icon i { font-size: 12px; color: var(--accent); }
+        .cat-name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 700; font-size: 13px;
+            color: var(--text);
+        }
+        .cat-count {
+            font-size: 9px; color: var(--muted); margin-left: 4px;
+        }
+        .cat-chevron { color: var(--muted); transition: transform 0.2s; }
+        .cat-chevron.open { transform: rotate(180deg); }
+
+        /* endpoints */
+        .cat-body { display: grid; gap: 2px; padding: 2px 0 0; }
+        .api-item {
+            background: var(--surface); border: 1px solid var(--border);
+        }
+        .ep-header {
+            width: 100%; text-align: left; cursor: pointer;
+            padding: 0.75rem 1rem;
+            display: flex; align-items: center; justify-content: space-between;
+            background: none; color: var(--text);
+            transition: background 0.15s;
+        }
+        .ep-header:hover { background: var(--surface2); }
+        .ep-left { display: flex; align-items: center; gap: 0.75rem; min-width: 0; flex: 1; }
+        .method-badge {
+            font-size: 9px; font-weight: 700; padding: 3px 7px;
+            letter-spacing: 0.5px; flex-shrink: 0;
+        }
+        .method-GET { background: rgba(0,255,200,0.1); color: var(--accent); border: 1px solid rgba(0,255,200,0.3); }
+        .method-POST { background: rgba(0,184,255,0.1); color: var(--blue); border: 1px solid rgba(0,184,255,0.3); }
+        .method-PUT { background: rgba(255,200,67,0.1); color: var(--yellow); border: 1px solid rgba(255,200,67,0.3); }
+        .method-DELETE { background: rgba(255,77,109,0.1); color: var(--red); border: 1px solid rgba(255,77,109,0.3); }
+        .ep-info { min-width: 0; flex: 1; }
+        .ep-path {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px; color: var(--text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .ep-meta { display: flex; align-items: center; gap: 0.5rem; margin-top: 2px; }
+        .ep-name { font-size: 10px; color: var(--muted2); }
+        .status-pill {
+            font-size: 8px; padding: 1px 5px; letter-spacing: 0.5px;
+        }
+        .status-ready { background: rgba(0,255,200,0.08); color: var(--accent); border: 1px solid rgba(0,255,200,0.2); }
+        .status-deprecated { background: rgba(255,200,67,0.08); color: var(--yellow); border: 1px solid rgba(255,200,67,0.2); }
+        .ep-chevron { color: var(--muted); flex-shrink: 0; transition: transform 0.2s; font-size: 16px; }
+        .ep-chevron.open { transform: rotate(180deg); }
+
+        /* endpoint body */
+        .ep-body {
+            border-top: 1px solid var(--border);
+            background: var(--surface3);
+            padding: 1.25rem;
+            overflow: hidden; /* contain children */
+            box-sizing: border-box;
+        }
+        .ep-desc { font-size: 11px; color: var(--muted2); line-height: 1.7; margin-bottom: 1rem; }
+        .block-label {
+            font-size: 9px; color: var(--muted); letter-spacing: 2px;
+            text-transform: uppercase; margin-bottom: 0.5rem;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .block-label i { font-size: 12px; color: var(--accent); margin-right: 4px; }
+
+        /* form */
+        .form-fields { display: grid; gap: 0.75rem; margin-bottom: 1rem; }
+        .field-wrap {}
+        .field-label {
+            display: block; font-size: 10px; color: var(--muted2);
+            margin-bottom: 0.35rem;
+        }
+        .field-label .req { color: var(--red); }
+        .field-hint { font-size: 9px; color: var(--muted); margin-top: 3px; }
+        input[type=text], input[type=number], input[type=file], select, textarea {
+            width: 100%; background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text); font-family: 'Space Mono', monospace;
+            font-size: 11px; padding: 0.6rem 0.75rem;
+            outline: none; transition: border-color 0.2s;
+            border-radius: 0;
+            box-sizing: border-box; /* ensure width:100% doesn't overflow */
+            max-width: 100%;
+        }
+        input:focus, select:focus, textarea:focus { border-color: var(--border-h); }
+        input::placeholder, textarea::placeholder { color: var(--muted); }
+        select option { background: var(--surface); }
+        textarea { resize: vertical; min-height: 80px; }
+        input[type=file] { padding: 0.5rem; }
+        input[type=file]::file-selector-button {
+            background: var(--surface2); color: var(--muted2);
+            border: 1px solid var(--border); padding: 3px 8px;
+            font-size: 10px; cursor: pointer; margin-right: 8px;
+        }
+
+        .btn-execute {
+            background: var(--accent); color: var(--bg);
+            border: none; padding: 0.55rem 1.25rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            cursor: pointer; transition: opacity 0.2s;
+        }
+        .btn-execute:hover { opacity: 0.85; }
+        .btn-clear {
+            background: none; color: var(--muted2);
+            border: 1px solid var(--border); padding: 0.55rem 1rem;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px; cursor: pointer;
+            transition: border-color 0.2s, color 0.2s; margin-left: 8px;
+        }
+        .btn-clear:hover { border-color: var(--border-h); color: var(--text); }
+
+        /* response */
+        .response-section { margin-top: 1rem; }
+        .response-block {
+            background: var(--bg); border: 1px solid var(--border);
+            padding: 0.875rem; margin-bottom: 0.5rem;
+            overflow: hidden; /* prevent block itself from overflowing */
+        }
+        .response-block pre {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 320px;
+            max-width: 100%;
+            line-height: 1.6;
+            white-space: pre;
+            word-break: normal;
+            overflow-wrap: normal;
+        }
+        /* on mobile, allow vertical scroll but cap height tighter */
+        @media (max-width: 600px) {
+            .response-block pre {
+                font-size: 9px;
+                max-height: 240px;
+            }
+        }
+        .response-block code { font-family: inherit; white-space: pre; }
+        .response-block .err { color: var(--red); white-space: pre-wrap; word-break: break-word; }
+        .copy-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); transition: color 0.15s; padding: 2px 4px;
+        }
+        .copy-btn:hover { color: var(--accent); }
+
+        /* HTTP status table */
+        .status-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .status-table th {
+            background: var(--surface2); color: var(--muted);
+            text-align: left; padding: 0.5rem 0.75rem;
+            font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+            font-size: 9px; border-bottom: 1px solid var(--border);
+        }
+        .status-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--muted2); }
+        .status-table tr:last-child td { border-bottom: none; }
+        .status-table tr:hover td { background: var(--surface2); }
+        .sc { font-family: 'Space Mono', monospace; font-weight: 700; }
+        .sc-2 { color: var(--accent); }
+        .sc-4, .sc-5 { color: var(--red); }
+        .sc-429 { color: var(--yellow); }
+
+        .deprecated-warn {
+            background: rgba(255,200,67,0.05);
+            border: 1px solid rgba(255,200,67,0.2);
+            color: var(--yellow); font-size: 10px; padding: 0.6rem 0.875rem;
+        }
+
+        /* no results */
+        #noResults { text-align: center; padding: 3rem 0; font-size: 11px; color: var(--muted); }
+
+        /* animations */
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .will-fade-in { opacity: 0; }
+        .fade-in { animation: fadeSlide 0.35s ease-out forwards; }
+        .fade-out { animation: fadeSlide 0.2s ease-out reverse forwards; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner {
+            width: 18px; height: 18px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<aside id="sidebar">
+    <div class="sidebar-header">
+        <div class="sidebar-logo">Zo<span>Yanz</span> API</div>
+        <button class="sidebar-close" id="sidebarClose">
+            <i class="material-icons" style="font-size:16px;">close</i>
+        </button>
+    </div>
+    <div class="sidebar-body">
+        <div class="sidebar-nav-label">Navigation</div>
+        <a href="/" class="sidebar-link">
+            <i class="material-icons" style="font-size:14px;">dashboard</i> Dashboard
+        </a>
+        <div class="sidebar-nav-label">Links</div>
+        <a href="https://t.me/azorceha" target="_blank" class="sidebar-link">
+            <i class="material-icons" style="font-size:14px;">arrow_outward</i> Contact
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb6aaSyADTOLBm9HSl3h" target="_blank" class="sidebar-link">
+            <i class="material-icons" style="font-size:14px;">arrow_outward</i> Channel
+        </a>
+    </div>
+</aside>
+
+<div id="overlay"></div>
+
+<!-- Header -->
+<header>
+    <div class="header-inner">
+        <div class="logo-wrap">
+            <div class="logo-mark"><i class="fas fa-bolt" style="font-size:10px;"></i></div>
+            <div class="logo-text">Zo<span>Yanz</span></div>
+            <div class="badge">v1.0</div>
+        </div>
+        <div class="header-right">
+            <button class="menu-btn" id="sidebarToggle">
+                <i class="material-icons" style="font-size:18px;">menu</i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Main -->
+<main>
+    <!-- Notifications -->
+    <div class="notif-section">
+        <div class="notif-header">
+            <div class="notif-title">
+                <i class="material-icons" style="font-size:12px;">notifications</i>
+                Notifikasi
+            </div>
+            <div id="unread-count" class="notif-badge" style="display:none;"></div>
+        </div>
+        <div id="notifications-list"></div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+        <i class="material-icons search-icon">search</i>
+        <input type="text" id="searchInput" placeholder="Search endpoints, categories...">
+    </div>
+
+    <!-- API List -->
+    <div id="content">
+        <div id="noResults" style="display:none;">
+            <div>No endpoints found.</div>
+        </div>
+        <div id="apiList"></div>
+    </div>
+</main>
+
+<script>
+    // ── Sidebar ──
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('sidebarToggle').addEventListener('click', openSidebar);
+    document.getElementById('sidebarClose').addEventListener('click', closeSidebar);
+    overlay.addEventListener('click', closeSidebar);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+    // ── Copy ──
+    async function copyToClipboard(text, btn) {
+        if (!btn) return;
+        const orig = btn.innerHTML;
+        try {
+            await navigator.clipboard.writeText(text);
+            btn.textContent = 'Copied!';
+        } catch {
+            btn.textContent = 'Failed!';
+        }
+        setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    }
+
+    // ── Highlight ──
+    function hlJSON(el) {
+        if (window.hljs) hljs.highlightElement(el);
+    }
+
+    // ── Toggles ──
+    function toggleCategory(index) {
+        const body = document.getElementById(`cat-body-${index}`);
+        const chevron = document.getElementById(`cat-chevron-${index}`);
+        const hidden = body.style.display === 'none' || !body.style.display;
+        body.style.display = hidden ? 'grid' : 'none';
+        if (hidden) {
+            chevron.classList.add('open');
+        } else {
+            chevron.classList.remove('open');
+        }
+    }
+
+    function toggleEndpoint(catIndex, epIndex) {
+        const body = document.getElementById(`ep-body-${catIndex}-${epIndex}`);
+        const chevron = document.getElementById(`ep-chevron-${catIndex}-${epIndex}`);
+        const hidden = body.style.display === 'none' || !body.style.display;
+        body.style.display = hidden ? 'block' : 'none';
+        if (hidden) chevron.classList.add('open');
+        else chevron.classList.remove('open');
+    }
+
+    // ── Execute Request ──
+    async function executeRequest(event, catIndex, epIndex, method, path) {
+        event.preventDefault();
+        const form = document.getElementById(`form-${catIndex}-${epIndex}`);
+        const responseDiv = document.getElementById(`response-${catIndex}-${epIndex}`);
+        const responseContent = document.getElementById(`response-content-${catIndex}-${epIndex}`);
+        const clearButton = document.getElementById(`clear-${catIndex}-${epIndex}`);
+
+        responseDiv.style.display = 'block';
+
+        const formData = new FormData(form);
+        const fetchOptions = { method: method.toUpperCase() };
+
+        let fullPath = path;
+        let curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${path}"`;
+
+        if (['POST','PUT','PATCH'].includes(fetchOptions.method)) {
+            const rawJson = formData.get('__raw_json__');
+            if (rawJson && rawJson.trim()) {
+                fetchOptions.body = rawJson;
+                fetchOptions.headers = { 'Content-Type': 'application/json' };
+                curlCommand += ` -H "Content-Type: application/json" -d '${rawJson}'`;
+            } else {
+                formData.delete('__raw_json__');
+                fetchOptions.body = formData;
+                for (const [k, v] of formData.entries()) {
+                    if (v instanceof File && v.name) curlCommand += ` -F "${k}=@${v.name}"`;
+                    else if (typeof v === 'string') curlCommand += ` -F "${k}=${v}"`;
+                }
+            }
+        } else {
+            const params = new URLSearchParams();
+            for (const [k, v] of formData.entries()) {
+                if (typeof v === 'string' && v) params.append(k, v);
+            }
+            const qs = params.toString();
+            if (qs) fullPath += (path.includes('?') ? '&' : '?') + qs;
+            curlCommand = `curl -X ${fetchOptions.method} "${window.location.origin}${fullPath}"`;
+        }
+
+        const esc = s => s.replace(/"/g,'&quot;').replace(/'/g,"'");
+
+        responseContent.innerHTML = `
+            <div class="response-block">
+                <div class="block-label">
+                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">link</i>Request URL</span>
+                    <button class="copy-btn" onclick="copyToClipboard('${window.location.origin}${esc(fullPath)}', this)">
+                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
+                    </button>
+                </div>
+                <pre><code>${window.location.origin}${fullPath}</code></pre>
+            </div>
+            <div class="response-block">
+                <div class="block-label">
+                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">terminal</i>cURL</span>
+                    <button class="copy-btn" onclick="copyToClipboard(this.parentElement.nextElementSibling.innerText, this)">
+                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
+                    </button>
+                </div>
+                <pre><code>${curlCommand}</code></pre>
+            </div>
+            <div class="response-block">
+                <div class="block-label">
+                    <span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">storage</i>Response</span>
+                    <button class="copy-btn" onclick="copyToClipboard(document.getElementById('rb-${catIndex}-${epIndex}').innerText, this)">
+                        <i class="material-icons" style="font-size:13px;vertical-align:middle;">content_copy</i>
+                    </button>
+                </div>
+                <div id="rb-${catIndex}-${epIndex}"><div class="spinner"></div></div>
+            </div>`;
+
+        const rb = document.getElementById(`rb-${catIndex}-${epIndex}`);
+        try {
+            const res = await fetch(fullPath, fetchOptions);
+            const ct = res.headers.get('content-type') || '';
+            if (!res.ok) {
+                const err = await res.text().catch(() => '');
+                throw new Error(`${res.status} ${res.statusText}\n${err}`);
+            }
+            if (ct.includes('application/json')) {
+                const data = await res.json();
+                rb.innerHTML = `<pre><code class="language-json">${JSON.stringify(data, null, 2)}</code></pre>`;
+                setTimeout(() => hlJSON(rb.querySelector('code')), 0);
+            } else if (ct.startsWith('image/')) {
+                const blob = await res.blob();
+                rb.innerHTML = `<img src="${URL.createObjectURL(blob)}" style="max-width:100%;height:auto;">`;
+            } else {
+                const text = await res.text();
+                rb.innerHTML = `<pre><code>${text}</code></pre>`;
+            }
+        } catch(err) {
+            rb.innerHTML = `<pre class="err">${String(err)}</pre>`;
+        }
+        clearButton.style.display = 'inline-block';
+    }
+
+    // ── Clear Response ──
+    function clearResponse(catIndex, epIndex) {
+        const responseDiv = document.getElementById(`response-${catIndex}-${epIndex}`);
+        const clearButton = document.getElementById(`clear-${catIndex}-${epIndex}`);
+        responseDiv.style.display = 'none';
+        document.getElementById(`response-content-${catIndex}-${epIndex}`).innerHTML = '';
+        clearButton.style.display = 'none';
+    }
+
+    // ── Load Notifications ──
+    async function loadNotifications() {
+        const list = document.getElementById('notifications-list');
+        const badge = document.getElementById('unread-count');
+        try {
+            const res = await fetch(`/src/notifications.json?t=${Date.now()}`);
+            let notifs = await res.json();
+            if (!Array.isArray(notifs)) notifs = notifs ? [notifs] : [];
+            notifs.sort((a,b) => new Date(b.date||0) - new Date(a.date||0));
+            let unread = 0;
+            list.innerHTML = '';
+            notifs.forEach((n, i) => {
+                if (!n.read) unread++;
+                const el = document.createElement('div');
+                el.className = `notif-card will-fade-in fade-in ${n.read ? 'read' : ''}`;
+                el.style.animationDelay = `${i*40}ms`;
+                el.innerHTML = `
+                    <div class="notif-top">
+                        <div>
+                            <div class="notif-name">${n.title||'Notifikasi'}</div>
+                            <div class="notif-msg">${n.message||''}</div>
+                        </div>
+                        <div class="notif-meta">
+                            ${!n.read ? '<div class="unread-dot"></div>' : ''}
+                            <div class="notif-date">${n.date ? new Date(n.date).toLocaleDateString('id-ID',{year:'numeric',month:'short',day:'numeric'}) : ''}</div>
+                        </div>
+                    </div>`;
+                list.appendChild(el);
+            });
+            if (unread > 0) { badge.textContent = unread; badge.style.display = 'block'; }
+            if (notifs.length === 0) list.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:1rem 0;">Tidak ada notifikasi.</div>';
+        } catch { list.innerHTML = '<div style="font-size:11px;color:var(--red);">Gagal memuat notifikasi.</div>'; }
+    }
+
+    // ── Load APIs ──
+    async function loadApis() {
+        const apiList = document.getElementById('apiList');
+        try {
+            const res = await fetch('/src/openapi.json');
+            const data = await res.json();
+
+            const categories = {};
+            if (data.tags) {
+                data.tags.forEach(tag => { categories[tag.name] = { name: tag.name, items: [] }; });
+            }
+            Object.keys(data.paths).forEach(path => {
+                const pathItem = data.paths[path];
+                Object.keys(pathItem).forEach(method => {
+                    const ep = pathItem[method];
+                    const tag = ep.tags && ep.tags.length ? ep.tags[0] : 'Uncategorized';
+                    if (!categories[tag]) categories[tag] = { name: tag, items: [] };
+                    categories[tag].items.push({
+                        path, method: method.toUpperCase(),
+                        name: ep.summary || 'No summary',
+                        desc: ep.description || 'No description',
+                        status: ep.deprecated ? 'deprecated' : 'ready',
+                        parameters: ep.parameters,
+                        requestBody: ep.requestBody
+                    });
+                });
+            });
+
+            let html = '';
+            Object.values(categories).forEach((cat, catIndex) => {
+                if (!cat.items.length) return;
+                html += `
+                <div class="category-group will-fade-in fade-in" style="animation-delay:${catIndex*60}ms;" data-category="${cat.name}">
+                    <button class="cat-header" onclick="toggleCategory(${catIndex})">
+                        <div class="cat-left">
+                            <div class="cat-icon"><i class="material-icons" style="font-size:12px;">folder</i></div>
+                            <span class="cat-name">${cat.name}</span>
+                            <span class="cat-count">(${cat.items.length})</span>
+                        </div>
+                        <i class="material-icons cat-chevron" id="cat-chevron-${catIndex}">expand_more</i>
+                    </button>
+                    <div class="cat-body" id="cat-body-${catIndex}" style="display:none;">`;
+
+                cat.items.forEach((item, epIndex) => {
+                    const methodCls = `method-${item.method}`;
+                    const statusCls = item.status === 'deprecated' ? 'status-deprecated' : 'status-ready';
+
+                    let formHtml = '';
+                    if (item.parameters) {
+                        item.parameters.forEach(p => {
+                            const s = p.schema || {};
+                            const req = !!p.required;
+                            const label = `${p.name}${req ? ' <span class="req">*</span>' : ''}`;
+                            const desc = p.description ? `<div class="field-hint">${p.description}</div>` : '';
+                            const ph = (s.example ?? s.default ?? '') + '';
+
+                            if (Array.isArray(s.enum) && s.enum.length) {
+                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${p.name}" ${req?'required':''}>${s.enum.map(v=>`<option value="${v}">${v}</option>`).join('')}</select>${desc}</div>`;
+                            } else if (s.type === 'boolean') {
+                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${p.name}" ${req?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
+                            } else {
+                                const t = (s.type === 'number' || s.type === 'integer') ? 'number' : 'text';
+                                formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="${t}" name="${p.name}" placeholder="${ph.replace(/"/g,'&quot;')}" ${req?'required':''}>${desc}</div>`;
+                            }
+                        });
+                    }
+
+                    if (item.requestBody && item.requestBody.content) {
+                        const content = item.requestBody.content;
+                        if (content['multipart/form-data']) {
+                            const schema = content['multipart/form-data'].schema || { properties: {} };
+                            const reqd = schema.required || [];
+                            Object.keys(schema.properties || {}).forEach(propName => {
+                                const prop = schema.properties[propName] || {};
+                                const req = reqd.includes(propName);
+                                const label = `${propName}${req?' <span class="req">*</span>':''}`;
+                                const desc = prop.description ? `<div class="field-hint">${prop.description}</div>` : '';
+                                const ph = (prop.example ?? prop.default ?? '') + '';
+                                const isFile = prop.format === 'binary';
+                                if (isFile) {
+                                    let accept = '';
+                                    if (propName.toLowerCase().includes('image')) accept = 'accept="image/*"';
+                                    else if (propName.toLowerCase().includes('video')) accept = 'accept="video/*"';
+                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="file" name="${propName}" ${accept} ${req?'required':''}>${desc}</div>`;
+                                } else if (Array.isArray(prop.enum) && prop.enum.length) {
+                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${propName}" ${req?'required':''}>${prop.enum.map(v=>`<option value="${v}">${v}</option>`).join('')}</select>${desc}</div>`;
+                                } else if (prop.type === 'boolean') {
+                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><select name="${propName}" ${req?'required':''}><option value="true">true</option><option value="false">false</option></select>${desc}</div>`;
+                                } else {
+                                    const t = (prop.type === 'number' || prop.type === 'integer') ? 'number' : 'text';
+                                    formHtml += `<div class="field-wrap"><label class="field-label">${label}</label><input type="${t}" name="${propName}" placeholder="${ph.replace(/"/g,'&quot;')}" ${req?'required':''}>${desc}</div>`;
+                                }
+                            });
+                        }
+                        if (content['application/json']) {
+                            formHtml += `<div class="field-wrap"><label class="field-label">Body (application/json)</label><textarea name="__raw_json__" placeholder='{"key":"value"}'></textarea><div class="field-hint">JSON valid. Jika diisi, body lain diabaikan.</div></div>`;
+                        }
+                    }
+
+                    const tryItOut = item.status !== 'deprecated' ? `
+                        <div style="margin-bottom:1rem;">
+                            <div class="block-label"><span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">play_arrow</i>Try It Out</span></div>
+                            <form id="form-${catIndex}-${epIndex}" onsubmit="executeRequest(event,${catIndex},${epIndex},'${item.method}','${item.path}')">
+                                <div class="form-fields">${formHtml}</div>
+                                <button type="submit" class="btn-execute">Execute</button>
+                                <button type="button" id="clear-${catIndex}-${epIndex}" class="btn-clear" style="display:none;" onclick="clearResponse(${catIndex},${epIndex})">Clear</button>
+                            </form>
+                        </div>
+                        <div id="response-${catIndex}-${epIndex}" class="response-section" style="display:none;">
+                            <div id="response-content-${catIndex}-${epIndex}"></div>
+                        </div>` :
+                        `<div class="deprecated-warn"><i class="material-icons" style="font-size:12px;vertical-align:middle;margin-right:4px;">warning</i>Endpoint ini tidak digunakan lagi.</div>`;
+
+                    html += `
+                    <div class="api-item" id="${item.path.split('/').pop()}"
+                         data-method="${item.method}" data-path="${item.path}"
+                         data-alias="${item.name}" data-description="${item.desc}"
+                         data-category="${cat.name}">
+                        <button class="ep-header" onclick="toggleEndpoint(${catIndex},${epIndex})">
+                            <div class="ep-left">
+                                <span class="method-badge ${methodCls}">${item.method}</span>
+                                <div class="ep-info">
+                                    <div class="ep-path">${item.path}</div>
+                                    <div class="ep-meta">
+                                        <span class="ep-name">${item.name}</span>
+                                        <span class="status-pill ${statusCls}">${item.status}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <i class="material-icons ep-chevron" id="ep-chevron-${catIndex}-${epIndex}">expand_more</i>
+                        </button>
+                        <div class="ep-body" id="ep-body-${catIndex}-${epIndex}" style="display:none;">
+                            <div class="ep-desc">${item.desc}</div>
+                            ${tryItOut}
+                            <div style="margin-top:1rem;">
+                                <div class="block-label"><span><i class="material-icons" style="font-size:11px;vertical-align:middle;margin-right:4px;">list</i>HTTP Status Codes</span></div>
+                                <table class="status-table">
+                                    <thead><tr><th>Code</th><th>Description</th></tr></thead>
+                                    <tbody>
+                                        <tr><td><span class="sc sc-2">200</span></td><td>OK — Request berhasil</td></tr>
+                                        <tr><td><span class="sc sc-4">400</span></td><td>Bad Request — Parameter tidak valid</td></tr>
+                                        <tr><td><span class="sc sc-4">401</span></td><td>Unauthorized — API key tidak valid</td></tr>
+                                        <tr><td><span class="sc sc-4">403</span></td><td>Forbidden — Tidak ada akses</td></tr>
+                                        <tr><td><span class="sc sc-4">404</span></td><td>Not Found — Endpoint tidak ditemukan</td></tr>
+                                        <tr><td><span class="sc sc-429">429</span></td><td>Too Many Requests — Rate limit tercapai</td></tr>
+                                        <tr><td><span class="sc sc-5">500</span></td><td>Internal Server Error — Kesalahan server</td></tr>
+                                        <tr><td><span class="sc sc-5">503</span></td><td>Service Unavailable — Server tidak tersedia</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            apiList.innerHTML = html;
+        } catch(err) {
+            apiList.innerHTML = `<div style="color:var(--red);font-size:11px;">Gagal memuat API data.</div>`;
+            console.error(err);
+        }
+    }
+
+    // ── Search ──
+    document.getElementById('searchInput').addEventListener('input', function() {
+        const q = this.value.toLowerCase();
+        const items = document.querySelectorAll('.api-item');
+        const cats = document.querySelectorAll('.category-group');
+        const noRes = document.getElementById('noResults');
+        let visible = 0;
+
+        items.forEach(item => {
+            const match = item.dataset.path.toLowerCase().includes(q) ||
+                          item.dataset.alias.toLowerCase().includes(q) ||
+                          item.dataset.description.toLowerCase().includes(q);
+            item.style.display = match ? '' : 'none';
+            if (match) visible++;
+        });
+
+        cats.forEach(cat => {
+            const hasVisible = [...cat.querySelectorAll('.api-item')].some(i => i.style.display !== 'none');
+            cat.style.display = hasVisible ? '' : 'none';
+        });
+
+        noRes.style.display = visible === 0 ? 'block' : 'none';
+    });
+
+    // ── Init ──
+    document.addEventListener('DOMContentLoaded', () => {
+        loadApis();
+        loadNotifications();
+    });
+</script>
+</body>
+</html>
