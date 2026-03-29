@@ -18,7 +18,7 @@ A modern, clean, and user-friendly interface for browsing and testing Falcon API
 ### Prerequisites
 
 - Web server (Apache, Nginx, etc.)
-- Modern web browser
+- Modern web browser.
 
 ### Installation
 
