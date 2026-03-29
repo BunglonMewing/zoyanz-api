@@ -7,35 +7,59 @@
     "description": "Simple and easy to use API."
   },
   "servers": [
-    { "url": "/" }
+    {
+      "url": "/"
+    }
   ],
   "tags": [
-    { "name": "AI" },
-    { "name": "Anime" },
-    { "name": "Downloader" },
-    { "name": "Image" },
-    { "name": "News" }
+    {
+      "name": "AI"
+    },
+    {
+      "name": "Anime"
+    },
+    {
+      "name": "Downloader"
+    },
+    {
+      "name": "Image"
+    },
+    {
+      "name": "News"
+    }
   ],
   "paths": {
     "/ai/copilot": {
       "get": {
         "summary": "Copilot Chat",
         "description": "Kirim pertanyaan ke Copilot Microsoft dan dapatkan jawaban beserta referensi/citations",
-        "tags": ["AI"],
+        "tags": [
+          "AI"
+        ],
         "parameters": [
           {
             "name": "message",
             "in": "query",
             "required": true,
             "description": "Pesan atau pertanyaan yang ingin dikirim ke Copilot",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "model",
             "in": "query",
             "required": false,
             "description": "Model Copilot yang digunakan (default: 'default', opsional: 'think-deeper', 'gpt-5')",
-            "schema": { "type": "string", "enum": ["default", "think-deeper", "gpt-5"], "default": "default" }
+            "schema": {
+              "type": "string",
+              "enum": [
+                "default",
+                "think-deeper",
+                "gpt-5"
+              ],
+              "default": "default"
+            }
           }
         ],
         "responses": {
@@ -46,15 +70,28 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "text": { "type": "string", "example": "Berikut adalah berita terbaru dari Indonesia..." },
+                    "text": {
+                      "type": "string",
+                      "example": "Berikut adalah berita terbaru dari Indonesia..."
+                    },
                     "citations": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "title": { "type": "string", "example": "Detik News" },
-                          "icon": { "type": "string", "example": "https://example.com/icon.png" },
-                          "url": { "type": "string", "format": "uri", "example": "https://www.detik.com/..." }
+                          "title": {
+                            "type": "string",
+                            "example": "Detik News"
+                          },
+                          "icon": {
+                            "type": "string",
+                            "example": "https://example.com/icon.png"
+                          },
+                          "url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://www.detik.com/..."
+                          }
                         }
                       }
                     }
@@ -70,8 +107,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Message wajib diisi" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Message wajib diisi"
+                    }
                   }
                 }
               }
@@ -84,8 +127,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal memproses request" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal memproses request"
+                    }
                   }
                 }
               }
@@ -98,14 +147,18 @@
       "get": {
         "summary": "Venice AI Chat",
         "description": "Mengirim pertanyaan ke model Venice AI dan mendapatkan jawaban final.",
-        "tags": ["AI"],
+        "tags": [
+          "AI"
+        ],
         "parameters": [
           {
             "name": "message",
             "in": "query",
             "required": true,
             "description": "Teks atau pertanyaan yang ingin dikirim ke Venice AI",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -116,7 +169,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "result": {
                       "type": "string",
                       "example": "Halo! Saya Venice AI, siap membantu Anda menjawab pertanyaan atau membuat konten kreatif."
@@ -133,8 +189,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Pesan wajib diisi" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Pesan wajib diisi"
+                    }
                   }
                 }
               }
@@ -147,8 +209,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal memproses request" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal memproses request"
+                    }
                   }
                 }
               }
@@ -161,14 +229,18 @@
       "get": {
         "summary": "DeepSeek AI Chat",
         "description": "Mengirim pertanyaan ke model DeepSeek AI dan mendapatkan jawaban.",
-        "tags": ["AI"],
+        "tags": [
+          "AI"
+        ],
         "parameters": [
           {
             "name": "text",
             "in": "query",
             "required": true,
             "description": "Teks atau pertanyaan yang ingin dikirim ke DeepSeek AI",
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -179,7 +251,10 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "result": {
                       "type": "string",
                       "example": "Halo! Saya DeepSeek AI, siap membantu Anda dengan berbagai pertanyaan dan tugas."
@@ -196,8 +271,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Parameter text wajib diisi" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Parameter text wajib diisi"
+                    }
                   }
                 }
               }
@@ -210,8 +291,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal memproses request" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal memproses request"
+                    }
                   }
                 }
               }
@@ -224,7 +311,9 @@
       "get": {
         "summary": "Waifu",
         "description": "Mengambil gambar waifu secara acak dari API waifu.pics.",
-        "tags": ["Anime"],
+        "tags": [
+          "Anime"
+        ],
         "parameters": [],
         "responses": {
           "200": {
@@ -246,8 +335,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "error": { "type": "string", "example": "Gagal mengambil waifu." }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal mengambil waifu."
+                    }
                   }
                 }
               }
@@ -260,14 +355,19 @@
       "get": {
         "summary": "CapCut Downloader",
         "description": "Ambil data dan video template dari CapCut berdasarkan URL template",
-        "tags": ["Downloader"],
+        "tags": [
+          "Downloader"
+        ],
         "parameters": [
           {
             "name": "url",
             "in": "query",
             "description": "URL template CapCut yang ingin diambil datanya",
             "required": true,
-            "schema": { "type": "string", "format": "uri" }
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
           }
         ],
         "responses": {
@@ -278,19 +378,49 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "result": {
                       "type": "object",
                       "properties": {
-                        "title": { "type": "string", "example": "Template Name" },
-                        "description": { "type": "string", "example": "Template Description" },
-                        "thumbnail": { "type": "string", "format": "uri" },
-                        "video": { "type": "string", "format": "uri" },
-                        "author": { "type": "string", "example": "Author Name" },
-                        "avatar": { "type": "string", "format": "uri" },
-                        "duration": { "type": "number", "example": 15 },
-                        "likes": { "type": "integer", "example": 1200 },
-                        "uses": { "type": "integer", "example": 300 }
+                        "title": {
+                          "type": "string",
+                          "example": "Template Name"
+                        },
+                        "description": {
+                          "type": "string",
+                          "example": "Template Description"
+                        },
+                        "thumbnail": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "video": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "author": {
+                          "type": "string",
+                          "example": "Author Name"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "format": "uri"
+                        },
+                        "duration": {
+                          "type": "number",
+                          "example": 15
+                        },
+                        "likes": {
+                          "type": "integer",
+                          "example": 1200
+                        },
+                        "uses": {
+                          "type": "integer",
+                          "example": 300
+                        }
                       }
                     }
                   }
@@ -298,8 +428,12 @@
               }
             }
           },
-          "400": { "description": "URL tidak disertakan" },
-          "500": { "description": "Gagal memproses request" }
+          "400": {
+            "description": "URL tidak disertakan"
+          },
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -307,7 +441,9 @@
       "get": {
         "summary": "Pinterest ",
         "description": "Mengambil data dan link media (video/image) dari URL Pinterest / pin.it.",
-        "tags": ["Downloader"],
+        "tags": [
+          "Downloader"
+        ],
         "parameters": [
           {
             "name": "url",
@@ -328,17 +464,41 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
-                    "creator": { "type": "string", "example": "Azor Ceha" },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "creator": {
+                      "type": "string",
+                      "example": "Azor Ceha"
+                    },
                     "result": {
                       "type": "object",
                       "properties": {
-                        "type": { "type": "string", "example": "video" },
-                        "title": { "type": "string", "example": "Art" },
-                        "author": { "type": "string", "example": "ShiroAMV7" },
-                        "username": { "type": "string", "example": "shiroamv7" },
-                        "media": { "type": "string", "example": "https://v1.pinimg.com/videos/iht/expMp4/..." },
-                        "pinterest_url": { "type": "string", "example": "https://pin.it/lOPdveAO7" }
+                        "type": {
+                          "type": "string",
+                          "example": "video"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "Art"
+                        },
+                        "author": {
+                          "type": "string",
+                          "example": "ShiroAMV7"
+                        },
+                        "username": {
+                          "type": "string",
+                          "example": "shiroamv7"
+                        },
+                        "media": {
+                          "type": "string",
+                          "example": "https://v1.pinimg.com/videos/iht/expMp4/..."
+                        },
+                        "pinterest_url": {
+                          "type": "string",
+                          "example": "https://pin.it/lOPdveAO7"
+                        }
                       }
                     }
                   }
@@ -353,9 +513,18 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "creator": { "type": "string", "example": "Azor Ceha" },
-                    "error": { "type": "string", "example": "URL harus dari Pinterest / pin.it" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "creator": {
+                      "type": "string",
+                      "example": "Azor Ceha"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "URL harus dari Pinterest / pin.it"
+                    }
                   }
                 }
               }
@@ -368,9 +537,18 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "creator": { "type": "string", "example": "Azor Ceha" },
-                    "error": { "type": "string", "example": "Gagal memproses request" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "creator": {
+                      "type": "string",
+                      "example": "Azor Ceha"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "Gagal memproses request"
+                    }
                   }
                 }
               }
@@ -383,14 +561,19 @@
       "get": {
         "summary": "TikTok",
         "description": "Download video TikTok",
-        "tags": ["Downloader"],
+        "tags": [
+          "Downloader"
+        ],
         "parameters": [
           {
             "name": "url",
             "in": "query",
             "description": "URL video TikTok yang ingin diunduh",
             "required": true,
-            "schema": { "type": "string", "format": "uri" }
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
           }
         ],
         "responses": {
@@ -401,17 +584,45 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "result": {
                       "type": "object",
                       "properties": {
-                        "url": { "type": "string", "example": "https://tikwm.com/video.mp4" },
-                        "title": { "type": "string", "example": "Judul Video TikTok" },
-                        "author": { "type": "string", "example": "Username TikTok" },
-                        "thumb": { "type": "string", "format": "uri", "example": "https://tikwm.com/thumb.jpg" },
-                        "video_sd": { "type": "string", "format": "uri", "example": "https://tikwm.com/video_sd.mp4" },
-                        "video_hd": { "type": "string", "format": "uri", "example": "https://tikwm.com/video_hd.mp4" },
-                        "music": { "type": "string", "format": "uri", "example": "https://tikwm.com/music.mp3" }
+                        "url": {
+                          "type": "string",
+                          "example": "https://tikwm.com/video.mp4"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "Judul Video TikTok"
+                        },
+                        "author": {
+                          "type": "string",
+                          "example": "Username TikTok"
+                        },
+                        "thumb": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://tikwm.com/thumb.jpg"
+                        },
+                        "video_sd": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://tikwm.com/video_sd.mp4"
+                        },
+                        "video_hd": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://tikwm.com/video_hd.mp4"
+                        },
+                        "music": {
+                          "type": "string",
+                          "format": "uri",
+                          "example": "https://tikwm.com/music.mp3"
+                        }
                       }
                     }
                   }
@@ -419,8 +630,12 @@
               }
             }
           },
-          "400": { "description": "URL tidak disertakan" },
-          "500": { "description": "Gagal memproses request" }
+          "400": {
+            "description": "URL tidak disertakan"
+          },
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -428,7 +643,9 @@
       "get": {
         "summary": "Blue Archive",
         "description": "Blue Archive Random Images",
-        "tags": ["Image"],
+        "tags": [
+          "Image"
+        ],
         "responses": {
           "200": {
             "description": "Respon berhasil",
@@ -437,17 +654,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "images": {
                       "type": "array",
-                      "items": { "type": "string", "format": "uri" }
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
                     }
                   }
                 }
               }
             }
           },
-          "500": { "description": "Gagal memproses request" }
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -455,7 +680,9 @@
       "get": {
         "summary": "loli",
         "description": "Loli Random Images",
-        "tags": ["Image"],
+        "tags": [
+          "Image"
+        ],
         "responses": {
           "200": {
             "description": "Respon berhasil",
@@ -464,17 +691,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "images": {
                       "type": "array",
-                      "items": { "type": "string", "format": "uri" }
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
                     }
                   }
                 }
               }
             }
           },
-          "500": { "description": "Gagal memproses request" }
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -482,7 +717,9 @@
       "get": {
         "summary": "Mpls Generator",
         "description": "Membuat Twibbon dari foto user dan frame MPLS",
-        "tags": ["Image"],
+        "tags": [
+          "Image"
+        ],
         "parameters": [
           {
             "name": "url",
@@ -520,7 +757,9 @@
       "get": {
         "summary": "papayang",
         "description": "papayang Random Images",
-        "tags": ["Image"],
+        "tags": [
+          "Image"
+        ],
         "responses": {
           "200": {
             "description": "Respon berhasil",
@@ -529,17 +768,25 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "images": {
                       "type": "array",
-                      "items": { "type": "string", "format": "uri" }
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
                     }
                   }
                 }
               }
             }
           },
-          "500": { "description": "Gagal memproses request" }
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -547,7 +794,9 @@
       "get": {
         "summary": "Wallpaper",
         "description": "Random images from WallpaperFlare based on search query",
-        "tags": ["Image"],
+        "tags": [
+          "Image"
+        ],
         "parameters": [
           {
             "name": "q",
@@ -578,10 +827,16 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": true },
+                    "status": {
+                      "type": "boolean",
+                      "example": true
+                    },
                     "images": {
                       "type": "array",
-                      "items": { "type": "string", "format": "uri" }
+                      "items": {
+                        "type": "string",
+                        "format": "uri"
+                      }
                     }
                   }
                 }
@@ -595,8 +850,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "status": { "type": "boolean", "example": false },
-                    "message": { "type": "string", "example": "Error message here" }
+                    "status": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Error message here"
+                    }
                   }
                 }
               }
@@ -609,7 +870,9 @@
       "get": {
         "summary": "Detik News",
         "description": "Scraping berita terpopuler dari Detik.com",
-        "tags": ["News"],
+        "tags": [
+          "News"
+        ],
         "responses": {
           "200": {
             "description": "Respon berhasil",
@@ -645,7 +908,9 @@
               }
             }
           },
-          "500": { "description": "Gagal memproses request" }
+          "500": {
+            "description": "Gagal memproses request"
+          }
         }
       }
     },
@@ -653,7 +918,9 @@
       "get": {
         "summary": "Kontan News",
         "description": "Scraping berita terbaru dari Kontan.co.id",
-        "tags": ["News"],
+        "tags": [
+          "News"
+        ],
         "responses": {
           "200": {
             "description": "Respon berhasil",
@@ -693,11 +960,22 @@
               }
             }
           },
-          "500": { 
-            "description": "Gagal memproses request" 
+          "500": {
+            "description": "Gagal memproses request"
           }
         }
       }
     }
+  },
+  "dependencies": {
+    "axios": "^1.14.0",
+    "chalk": "^4.1.2",
+    "cheerio": "^1.2.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "jimp": "^1.6.0",
+    "node-fetch": "^2.7.0",
+    "ws": "^8.20.0"
   }
 }
